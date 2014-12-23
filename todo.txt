@@ -1,0 +1,154 @@
+
+
+BUGS:
+-------------------------------------------------------------
+
+
+
+REFACTORING:
+-------------------------------------------------------------
+ - Remove CanSeeHiddenDirs() permission - not used
+ - Make a better file-system iterator, add begin(), end() to Path
+
+
+UNIT TESTS
+-------------------------------------------------------------
+
+
+FUNCTIONAL TESTS
+-------------------------------------------------------------
+ v Basic functional tests to verify commands, authorzation and authentication
+ - Session timeout
+ - Transfer timeout
+ - Long-running transfer to verify that session-timeout is not triggered
+ - Bogus commands
+ - Very long command-name
+ - Very long paths
+ - Simulate a typical session with some dir, upload, download. Run it several times in parallell.
+ - Test access to non-recursive dir (and below it, where parent perms applies)
+
+STEPS:
+-------------------------------------------------------------
+ v FTP protocol class
+ v Add TCP listener and connection loop
+ v Add session manager
+ v Add FTP Protocol parser
+ v Add welcome and simple commands (syst, stat, help)
+ v Add FTP commands
+    v RETR
+        v Implement Session::OpenFile
+        v Implement WfdeFtpSession::StartTransfer
+        v Implement a void login/pass handler
+        v Use exceptions to deal with trannsfer setup errors
+        v Ensure that we reply unfder all conditions
+        v Test
+        v Implement ascii transfer
+    v STOR
+        v Implement
+        v Test
+        v Implement ascii transfer
+    v STOU
+    v APPE
+    v FEAT
+    v REST
+    v ALLO
+    v ABOR
+    v CWD
+    v PWD
+    v DELE
+    v RMD
+    v MKD
+    v NOOP
+    v RNFR/RNTO
+    v HELP
+    - REIN
+    v LIST
+        v Add pure virtual paths
+        v Format like ls -l
+        v Hide hidden files/dirs by default
+        v Options:
+            -1 (one)
+            -a (all)
+            -l (long format - default)
+    v MLSD
+    v MLST
+    v Make sure MLSx always use BINARY transfers
+    v OPTS MLST
+    v MDTM
+    v NLST
+    v PASV
+    v STAT
+    v Fix buffer manipulation in WfdeFtpSession.cpp:121 / FIXME
+    v Deal with session time-out
+    v Deal with transfer time-outs (and sessioon to during transfer)
+ v Add functional test suite (python?)
+    v Configure the server trough conf-files (to get permissions/paths right)
+    v Create the required test-files (different sizes)
+    v Check [almost] all commands
+    v Upload and download and verify hashes that the files are correctly transferred.
+    v Check that REST and APPE works
+ v Add more unit tests
+ v Add auth manager
+ v Add auth commands
+ v Add permissions to the user and merge it upon login
+
+ROADMAP:
+-------------------------------------------------------------
+ v Implement the FTP protocol
+    v Add welcome and auth commands
+    v Add auth manager
+    v Add session manager
+    v Add common transfer commands
+    v Add file listing (ls)
+    v Add rest, unique and friends
+    v Add ACSII transfer
+    v Add new file listing format
+    v Add obscure commands
+ v Add configuration files to wfded
+ - Check the bind issue in WfdeFtpSession.cpp:611
+ v Add a simple authentication manager (conf-file based)
+ v Implement WfdeSesion::OnHousekeeping() - timeout sessions
+ ~ Prepare the code for public release
+ v Finish authentication
+ v Make sure that all unit tests and performance tests are OK
+ == RELEASE ALPHA PREVIEW
+ - Use tools to test for known FTP vulnerabilities
+ - Deal with PORT and PASV connection establishment time-out (today they will time out with the session)
+ - Add TLS support
+ - Add tmp filenames for files being uploaded.
+ - Add IPv6 support for FTP
+ - Add statistics manager
+ - Do proper performance tests
+ - Add HTTP protocol
+    - Add basic HTTP 1.0 and 1.1
+    - Add Auth / Session management
+ - Use tools to test for common vulnerabilities
+ === RELERASE ALPHA
+ - Stabilize
+ - Optimize for performance
+    - ASCII transfers are slow
+    - Uploads are slow
+ - Implement suggested features whenever they make sense
+ - Use tools to test for common vulnerabilities
+ === RELEASE BETA ===
+ - Stabilize
+ - Optimize memory usage
+ - Optimize troughput
+ - Implement suggested features whenever they make sense
+ - Use tools to test for common vulnerabilities
+ === RELEASE RC ===
+
+ - Stabilize
+ - Use tools to test for common vulnerabilities
+ === RELEASE ===
+
+
+FUTURE FEATURES:
+-------------------------------------------------------------
+ - Scalibility for cloud optimized use cases
+ - Events
+ - Built in scripting triggereded by events
+ - C++ based plugins based on simple interfaces.
+ - Native scp support (limited ssh/sshfs support)
+ - NFS support with proper authentication and encryption?
+
