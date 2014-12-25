@@ -24,7 +24,7 @@ class Pipeline;
  *
  * wfde is an acronyom for War FTP Daemon Engine. It is a
  * C++ library providing a basic FTP server implementation
- * meant as a builoding-block for real FTP server projects,
+ * meant as a building-block for real FTP server projects,
  * from small embedded services to massively scalable
  * enterprise solutions.
  *
@@ -47,7 +47,7 @@ class AuthManager;
 enum class Version
 {
     MAJOR = 0,
-    MINOR = 20
+    MINOR = 21
 };
 
 /*! Program configuration
@@ -949,10 +949,10 @@ public:
     /*! Periodically update internal state
      *
      * This method will be called priodically by a timer that iterates over
-     * all the sessions it maintains. It should therefor return immediately
+     * all the sessions it maintains. It should therefore return immediately
      * and prefarably not touch any mutexes.
      *
-     * \return true if everryhing is fine, false if the session should be
+     * \return true if everything is fine, false if the session should be
      *      closed.
      *
      * \note This method does not need to be implemented in a thread-safe
@@ -1183,7 +1183,7 @@ void RegisterDefaultProtocols();
 } // namespace wfde
 } // namerspace war
 
-
+/* Operators to aid in logging object data */
 std::ostream& operator << (std::ostream& o, const war::wfde::Server& entity);
 std::ostream& operator << (std::ostream& o, const war::wfde::Protocol& entity);
 std::ostream& operator << (std::ostream& o, const war::wfde::Host& entity);

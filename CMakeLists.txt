@@ -50,7 +50,6 @@ endif()
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Destination location")
 link_directories(${LIBRARY_OUTPUT_PATH})
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin CACHE PATH "Destination location")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
@@ -61,11 +60,10 @@ link_directories(
     ${WARLIB_ROOT_DIR}/lib
     )
 
-#add_subdirectory(${WARLIB_ROOT_DIR} ${CMAKE_CURRENT_BINARY_DIR}/warlib)
 add_subdirectory(src)
 
 if (CMAKE_BUILD_TESTING)
-	add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
 
 if (WITH_APIDOC)
