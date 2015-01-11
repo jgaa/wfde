@@ -5,7 +5,7 @@
 #include "tasks/WarThreadpool.h"
 #include "WfdeServer.h"
 #include "WfdeInterface.h"
-#include "WfdeSocket.h"
+#include "WfdeTlsSocket.h"
 #include "log/WarLog.h"
 
 using namespace std;
@@ -16,10 +16,10 @@ std::ostream& operator << (std::ostream& o, const war::wfde::Interface& entity) 
 
 std::ostream& operator << (std::ostream& o, const war::wfde::Socket& sck) {
     o << "{Socket " << war::log::Esc(sck.GetName()) << " ("
-        << const_cast<war::wfde::Socket&>(sck).GetSocket().native_handle()
+        << sck.GetSocketVal()
         << ")";
 
-    if (sck.GetSocket().is_open()) {
+    if (sck.IsOpen()) {
         o << ' ' << sck.GetSocket().local_endpoint()
             << " <--> "
             << sck.GetSocket().remote_endpoint();
@@ -95,19 +95,21 @@ void WfdeInterface::Accept(boost::asio::yield_context yield)
         boost::system::error_code ec;
 
         auto& some_pipeline = threadpool.GetAnyPipeline();
-        auto socket = make_shared<tcp_socket_t>(some_pipeline);
+
+        auto socket = make_shared<tls_tcp_socket_t>(some_pipeline);
         LOG_TRACE1_FN << "Created socket " << *socket
             << " on " << some_pipeline
             << " from " << *this;
 
-        acceptor_->async_accept(socket->GetSocket(), yield[ec]);
+        acceptor_->async_accept(const_cast< boost::asio::ip::tcp::socket&>(
+            socket->GetSocket()), yield[ec]);
 
         if (!ec) {
             LOG_TRACE1_FN << "Incoming connection: " << *socket;
             try {
                 // Switch to the thread assigned to this socket
-                some_pipeline.Dispatch({[this, mysck = move(socket)](){
-                  on_connected_(mysck);
+                some_pipeline.Dispatch({[this, socket](){
+                  on_connected_(socket);
                 }, "Call on_connected"});
             } WAR_CATCH_ERROR;
         } else {

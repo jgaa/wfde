@@ -31,6 +31,7 @@ enum class FtpReplyCodes
     RC_CLOSING_DATA_CONNECTION /*226*/,
     RC_PASSIVE /*227*/,
     RC_LOGGED_IN /*230*/,
+    RC_SECURITY_DATA_EXCHANGE_COMPLETE, /*234*/
     RC_FILE_ACTION_OK /*250*/,
     RC_PATHNAME_CREATED /*257*/,
     RC_NEED_PASSWD /*331*/,
@@ -47,6 +48,7 @@ enum class FtpReplyCodes
     RC_BAD_SEQUENCE_OF_COMMANDS /*503*/,
     RC_PARAM_NOT_IMPLEMENTED /*504*/,
     RC_NOT_LOGGED_ON /*530*/,
+    RC_REJECTED_FOR_POLICY_REASONS, /* 534 */
     RC_ACTION_NOT_TAKEN /*550*/,
     RC_ILLEGAL_FILE_NAME /*553*/
 };
@@ -242,6 +244,10 @@ struct FtpState
     std::unique_ptr<PasvAcceptor> pasv;
     bool list_hidden_files = false;
     std::string login_name;
+    bool cc_is_encrypted = false;
+    bool encrypt_transfers = false;
+    std::vector<task_t> tasks_pending_after_reply;
+
 };
 
 /*! Base class for FTP commands
@@ -298,6 +304,14 @@ public:
 
     /*! Must be preceeded by a valid STOR or PASV conmand */
     virtual bool NeedPostOrPasv() const { return false; }
+
+    /*! Can only be used after encryption is established if
+     *  if encryption (TLS) is mandentory.
+     */
+    virtual bool MustHaveEncryptionIfEnforced() const { return true; }
+
+    /*! Can only be used after encryption is established */
+    virtual bool MustHaveEncryption() const { return false; }
 
     /*! Returns the command required as the previos command.
 

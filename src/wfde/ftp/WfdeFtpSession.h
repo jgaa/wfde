@@ -61,6 +61,8 @@ public:
 
     void StartTransfer(std::unique_ptr<File> file) override;
 
+    void StartTls() override;
+
     /********** End overrides for SessionData ********/
 
     void ProcessCommands(boost::asio::yield_context yield);
@@ -100,12 +102,10 @@ private:
     void OnCommand(FtpCmd& cmd, const boost::string_ref& request);
     FtpCmd& GetFtpCommand(const boost::string_ref& request);
     void TransferFile(boost::asio::yield_context yield);
-    void SendFile(boost::asio::ip::tcp::socket& sck,
-                  boost::asio::yield_context& yield);
-    void ReceiveFile(boost::asio::ip::tcp::socket& sck,
-                     boost::asio::yield_context& yield);
+    void SendFile(boost::asio::yield_context& yield);
+    void ReceiveFile(boost::asio::yield_context& yield);
     void CleanupTransfer();
-    bool DoPort(boost::asio::ip::tcp::socket& sck,
+    bool DoPort(Socket& sck,
                 boost::asio::yield_context& yield);
     void TransferTouch();
     void NotifyFailed(boost::asio::yield_context& yield);
@@ -114,11 +114,9 @@ private:
     const Session::wptr_t session_; // The SessionManagers session we are bound to
     const boost::uuids::uuid id_; // Same as session_.lock()->GetUuid()
     const Socket::ptr_t socket_ptr_; // We need to keep the socket alive
-    boost::asio::ip::tcp::socket& socket_; // Control channel socket
-    std::vector<boost::asio::const_buffer> reply_buffers_; // asio buffer wrappers
+    Socket::write_buffers_t reply_buffers_; // asio buffer wrappers
     std::vector<std::string> reply_strings_; // The actual data to send
     std::unique_ptr<boost::asio::yield_context> yield_; // Control connection only!
-    boost::system::error_code ec_; // Control connection only!
     const FtpCmd::ftp_commands_t ftp_commands_; // The FTP commands we know about
     std::string prev_cmd_name_;
     std::string curr_cmd_name_;
@@ -131,6 +129,7 @@ private:
     std::chrono::steady_clock::time_point last_touch_time_{};
     const int transefer_touch_interval_ = 5; // Call Touch() on session every n seconds
     bool reply_failed_ = false;
+    std::shared_ptr<Socket> transfer_sck_;
 };
 
 }}} // naamespaces

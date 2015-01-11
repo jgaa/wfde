@@ -18,6 +18,7 @@ UNIT TESTS
 FUNCTIONAL TESTS
 -------------------------------------------------------------
  v Basic functional tests to verify commands, authorzation and authentication
+ - Test AUTH after TLS is established
  - Session timeout
  - Transfer timeout
  - Long-running transfer to verify that session-timeout is not triggered
@@ -108,15 +109,31 @@ ROADMAP:
  - Check the bind issue in WfdeFtpSession.cpp:611
  v Add a simple authentication manager (conf-file based)
  v Implement WfdeSesion::OnHousekeeping() - timeout sessions
- ~ Prepare the code for public release
+ v Prepare the code for public release
  v Finish authentication
  v Make sure that all unit tests and performance tests are OK
  == RELEASE ALPHA PREVIEW
  - Use tools to test for known FTP vulnerabilities
  - Deal with PORT and PASV connection establishment time-out (today they will time out with the session)
  - Add TLS support
+    v WfdeSocket for async operations
+    v WfdeSocket for CC
+    v WfdeSocket for transfers
+    v Add TLS socket (transition from normal socket) (Not possible / using TL:S sockets for everything)
+    v Add AUTH command & friends
+    v Add PROT command and encrypted transfers
+        v Enable TLS for PORT mode
+        v Enable TLS for PASV mode
+    - Add config for certs
+    - Allow the server to enforce TLS (config)
+    ~ Add functional tests for FTPS
+        v Control Channel
+        v Transfers
+        - Double AUTH
+        - Transfer with and without Transfer Encryption
  - Add tmp filenames for files being uploaded.
  - Add IPv6 support for FTP
+ - Port to Windows
  - Add statistics manager
  - Do proper performance tests
  - Add HTTP protocol

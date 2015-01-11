@@ -616,17 +616,41 @@ public:
 class Socket : public std::enable_shared_from_this<Socket>
 {
 public:
+    using write_buffers_t = std::vector<boost::asio::const_buffer>;
     using ptr_t = std::shared_ptr<Socket>;
     using wptr_t = std::weak_ptr<Socket>;
 
-    operator boost::asio::ip::tcp::socket& () { return GetSocket(); }
+    //operator boost::asio::ip::tcp::socket& () { return GetSocket(); }
 
     virtual boost::asio::ip::tcp::socket& GetSocket() = 0;
     virtual const boost::asio::ip::tcp::socket& GetSocket() const = 0;
+    virtual int GetSocketVal() const = 0;
     virtual Pipeline& GetPipeline() = 0;
     virtual const Pipeline& GetPipeline() const = 0;
-
     virtual const std::string& GetName() const = 0;
+
+    virtual std::size_t AsyncReadSome(boost::asio::mutable_buffers_1 buffers,
+                                      boost::asio::yield_context& yield) = 0;
+    virtual std::size_t AsyncRead(boost::asio::mutable_buffers_1 buffers,
+                                  boost::asio::yield_context& yield) = 0;
+    virtual void AsyncWrite(const boost::asio::const_buffers_1& buffers,
+                            boost::asio::yield_context& yield) = 0;
+    virtual void AsyncWrite(const write_buffers_t& buffers,
+                            boost::asio::yield_context& yield) = 0;
+    virtual void AsyncConnect(const boost::asio::ip::tcp::endpoint& ep,
+                              boost::asio::yield_context& yield) = 0;
+
+    virtual void AsyncShutdown(boost::asio::yield_context& yield) = 0;
+
+    virtual void Close() = 0;
+
+    virtual bool IsOpen() const = 0;
+
+    virtual boost::asio::ip::tcp::endpoint GetLocalEndpoint() = 0;
+
+    virtual boost::asio::ip::tcp::endpoint GetRemoteEndpoint() = 0;
+
+    virtual void UpgradeToTls(boost::asio::yield_context& yield) = 0;
 };
 
 /*! Interface to a protocol
@@ -786,7 +810,10 @@ public:
         using transfer_func_t = std::function<void (const SessionData&,
             std::unique_ptr<File>)>;
 
+        /*! Start a file transfer */
         virtual void StartTransfer(std::unique_ptr<File>) = 0;
+        /* Enable TLS on the protocol */
+        virtual void StartTls() = 0;
     };
 
     Session() = default;

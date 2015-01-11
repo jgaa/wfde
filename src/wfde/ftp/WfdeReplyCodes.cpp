@@ -31,6 +31,7 @@ const std::pair<int, std::string>& Resolve(const FtpReplyCodes& code)
         {226, "Closing data connection."s},
         {227, "RC_PASSIVE"s},
         {230, "User logged in, proceed."s},
+        {234, "Security data exchange complete."s},
         {250, "Requested file action okay, completed."s},
         {257, "RC_PATHNAME_CREATED"s},
         {331, "User name okay, need password."s},
@@ -47,6 +48,7 @@ const std::pair<int, std::string>& Resolve(const FtpReplyCodes& code)
         {503, "Bad sequence of commands."s},
         {504, "Command not implemented for that parameter."s},
         {530, "Not logged in."s},
+        {354, "Request denied for policy reasons"s},
         {550, "Requested action not taken. File is unavailable."s},
         {553, "Requested action not taken. File name not allowed."s}
     };

@@ -5,6 +5,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "log/WarLog.h"
 #include "wfde/ftp_protocol.h"
@@ -84,6 +85,8 @@ class FtpCmdFeat : public FtpCmd
 {
 public:
     using feat_fun_t = std::function<string (const FtpState&)>;
+
+    bool MustHaveEncryptionIfEnforced() const { return false; }
 
     FtpCmdFeat() : FtpCmd("FEAT") {}
 
@@ -1340,8 +1343,85 @@ private:
             << "Structure=File, "
             << "Type=" << state.GetType() << ", "
             << "Rest offset=" << state.rest
+            << ", CC-TLS=" << state.cc_is_encrypted
+            << ", PROT=" << (state.encrypt_transfers ? "P" : "C")
             ;
+    }
+};
 
+class FtpCmdAuth : public FtpCmd
+{
+public:
+    FtpCmdAuth() : FtpCmd("AUTH", "tls", "(tls|tls-c)", "AUTH TLS") {}
+
+    bool MustHaveEncryptionIfEnforced() const override { return false; }
+
+    void OnCmd(Session& session,
+               FtpState& state,
+               const param_t& cmd,
+               const param_t& param,
+               const match_t& match,
+               FtpReply& reply) override
+    {
+        if (state.cc_is_encrypted) {
+            reply.Reply(FtpReplyCodes::RC_REJECTED_FOR_POLICY_REASONS)
+                << "The control connection is already encrypted";
+            return;
+        }
+
+        reply.Reply(FtpReplyCodes::RC_SECURITY_DATA_EXCHANGE_COMPLETE);
+        state.tasks_pending_after_reply.push_back({
+            [&session, &state] {
+                try {
+                    session.GetSessionData().StartTls();
+                } WAR_CATCH_ERROR;
+            }, "Switch to TLS on CC"});
+    }
+};
+
+class FtpCmdPbsz : public FtpCmd
+{
+public:
+    FtpCmdPbsz() : FtpCmd("PBSZ", "0", "(0)", "PBSZ") {}
+
+    bool MustHaveEncryption() const override { return true; }
+
+    void OnCmd(Session& session,
+               FtpState& state,
+               const param_t& cmd,
+               const param_t& param,
+               const match_t& match,
+               FtpReply& reply) override
+    {
+        /* This command is mandated by RFC 2228 after AUTH, but for TLS
+         * it has no function.
+         *
+         * So we do nothing except, for replying.
+         */
+        reply.Reply(FtpReplyCodes::RC_OK);
+    }
+};
+
+class FtpCmdProt : public FtpCmd
+{
+public:
+    FtpCmdProt() : FtpCmd("PROT", "protection-mode", "(P|C)", "PROT") {}
+
+    bool MustHaveEncryption() const override { return true; }
+
+    void OnCmd(Session& session,
+               FtpState& state,
+               const param_t& cmd,
+               const param_t& param,
+               const match_t& match,
+               FtpReply& reply) override
+    {
+        state.encrypt_transfers = boost::iequals(param, "p"s);
+        LOG_TRACE1_FN << "Will "
+            << (state.encrypt_transfers ? "" : "NOT ")
+            << " encrypt transfers from now on.";
+
+        reply.Reply(FtpReplyCodes::RC_OK);
     }
 };
 
@@ -1390,6 +1470,9 @@ public:
         Add(make_unique<FtpCmdMlst>());
         Add(make_unique<FtpCmdPasv>());
         Add(make_unique<FtpCmdStat>());
+        Add(make_unique<FtpCmdAuth>());
+        Add(make_unique<FtpCmdPbsz>());
+        Add(make_unique<FtpCmdProt>());
 
         // Insert all the added commands into the default list that we hand
         // out to session instances.

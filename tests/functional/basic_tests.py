@@ -3,6 +3,7 @@
 import os
 import ftplib
 from ftplib import FTP
+from ftplib import FTP_TLS
 import server_config
 import sys
 import hashlib
@@ -36,6 +37,8 @@ class FtpTest:
         self.dl_files_cache = self.workdir + '/dlfiles.cache'
         self.skip_big_files = True
         self.disable_print = False
+        self.use_tls = False
+        self.use_transfer_tls = True
 
         for path in (self.ftp_root, self.workdir):
             if not os.path.exists(path):
@@ -94,14 +97,22 @@ class FtpTest:
         os.chdir(self.workdir);
         print('Ready to start tests on ftp-root: ' + self.ftp_root)
 
+    def __IsTransferTlsEnabled(self):
+        return self.use_tls and self.use_transfer_tls
 
     def __SetupOneTest(self, user=None, passwd=''):
-        ftp = FTP()
+        if self.use_tls:
+            ftp = FTP_TLS()
+        else:
+            ftp = FTP()
         ftp.connect(self.host, int(self.port))
         ftp.set_debuglevel(self.debug_level)
         ftp.set_pasv(self.pasv_mode)
         if user:
             ftp.login(user, passwd)
+            if self.__IsTransferTlsEnabled():
+                ftp.prot_p()
+
         return ftp
 
     def TestAnonymousLogins(self):
@@ -150,9 +161,8 @@ class FtpTest:
         Throw on server-side errors
         '''
         self.__PrintTest('[' + user + ']: Testing command ' + cmd + ' on path: ' + vpath)
-        ftp = self.__SetupOneTest()
+        ftp = self.__SetupOneTest(user, passwd)
         try:
-            ftp.login(user, passwd)
             if vpath:
                 cmd = cmd + ' ' + vpath;
             dir_listing = ''
@@ -230,9 +240,8 @@ class FtpTest:
 
     def TestMlsd(self, user, passwd, vpath):
         sys.stdout.write('[' + user + ']: Testing MLST on path: ' + vpath)
-        ftp = self.__SetupOneTest()
+        ftp = self.__SetupOneTest(user, passwd)
         try:
-            ftp.login(user, passwd)
             res = ftp.mlsd(vpath)
             lines = 0
             for l in res:
@@ -256,9 +265,8 @@ class FtpTest:
 
     def TestMlst(self, user, passwd, vpath):
         self.__PrintTest('[' + user + ']: Testing MLSD on path: ' + vpath)
-        ftp = self.__SetupOneTest()
+        ftp = self.__SetupOneTest(user, passwd)
         try:
-            ftp.login(user, passwd)
             cmd = 'MLST'
             if vpath:
                 cmd = cmd + ' ' + vpath
@@ -964,49 +972,55 @@ class FtpTest:
         else:
             print('All the tests were successfull!')
 
+
 if __name__ == '__main__':
 
     # Run tests
     testcase = FtpTest(config)
+    testcase.use_tls = True
     # Uncomment below to enable tests with large files (it's slow)
     #testcase.skip_big_files = False
     server_config.CreateServerConfig(config)
     print('Start the server with config-path to ' + config['server-config'])
     input('Press ENTER when ready')
 
-    testcase.TestEmptyInput()
-    testcase.TestAnonymousLogins()
-    testcase.TestInvalidLogins()
-    testcase.TestUserLogins()
-    testcase.TestLists()
-    testcase.TestNlsds()
-    testcase.TestMlsts()
-    testcase.TestCds()
-    testcase.TestCdups()
-    testcase.TestDeles()
-    testcase.TestHelp()
-    testcase.TestNoop()
-    testcase.TestSyst()
-    testcase.TestStat()
-    testcase.TestMdtm()
-    testcase.TestMkds()
-    testcase.TestRmds()
-    testcase.TestSizes()
-    testcase.TestRenames()
-    testcase.TestPassBeforeUser()
-    testcase.TestAbors()
-    testcase.TestAccessToHomes()
+    for tls in (False, True):
+        print('Testing with TLS = ' + str(tls))
+        testcase.use_tls = tls
 
-    for pm in (False, True):
-        print('Testing with passive mode = ' + str(pm))
-        testcase.pasv_mode = pm
+        testcase.TestEmptyInput()
+        testcase.TestAnonymousLogins()
+        testcase.TestInvalidLogins()
+        testcase.TestUserLogins()
+        testcase.TestLists()
+        testcase.TestNlsds()
+        testcase.TestMlsts()
+        testcase.TestCds()
+        testcase.TestCdups()
+        testcase.TestDeles()
+        testcase.TestHelp()
+        testcase.TestNoop()
+        testcase.TestSyst()
+        testcase.TestStat()
+        testcase.TestMdtm()
+        testcase.TestMkds()
+        testcase.TestRmds()
+        testcase.TestSizes()
+        testcase.TestRenames()
+        testcase.TestPassBeforeUser()
+        testcase.TestAbors()
+        testcase.TestAccessToHomes()
 
-        testcase.TestAppes()
-        testcase.TestDownloads()
-        testcase.TestUploads()
-        testcase.CloseDataTransfers()
-        testcase.TestStous()
-        testcase.TestRests()
+        for pm in (False, True):
+            print('Testing with passive mode = ' + str(pm))
+            testcase.pasv_mode = pm
+
+            testcase.TestAppes()
+            testcase.TestDownloads()
+            testcase.TestUploads()
+            testcase.CloseDataTransfers()
+            testcase.TestStous()
+            testcase.TestRests()
 
     testcase.ReportResult()
 

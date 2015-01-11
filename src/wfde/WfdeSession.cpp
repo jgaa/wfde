@@ -91,7 +91,7 @@ void WfdeSession::Close()
     if (!closed_) {
         WAR_ASSERT(owning_thread_id_ == std::this_thread::get_id());
         LOG_TRACE1_FN << "Closing " << *this;
-        socket_->GetSocket().close();
+        socket_->Close();
         closed_ = true;
     }
 }
