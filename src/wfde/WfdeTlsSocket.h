@@ -12,7 +12,7 @@
  * existing tcp socket. It appears that the ssl stream must own
  * the underlaying socket.
  *
- * That measn that we need to construct a SSL stream for each TCP socket that
+ * That means that we need to construct a SSL stream for each TCP socket that
  * may need to use SSL at some later time.
  */
 

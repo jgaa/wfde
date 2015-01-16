@@ -306,7 +306,7 @@ public:
     virtual bool NeedPostOrPasv() const { return false; }
 
     /*! Can only be used after encryption is established if
-     *  if encryption (TLS) is mandentory.
+     *  encryption (TLS) is mandentory.
      */
     virtual bool MustHaveEncryptionIfEnforced() const { return true; }
 
@@ -331,7 +331,7 @@ public:
                        const match_t& match,
                        FtpReply& reply) = 0;
 
-    /*! Called ehrn the opts command is received for this command */
+    /*! Called when the opts command is received for this command */
     virtual void OnOpts(Session& session,
                         FtpState& state,
                         const param_t& cmd,

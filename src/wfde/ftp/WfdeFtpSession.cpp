@@ -608,9 +608,10 @@ void WfdeFtpSession::SendFile(boost::asio::yield_context& yield)
     try {
         transfer_sck_->AsyncShutdown(yield);
     } WAR_CATCH_ALL_EF(
-        LOG_TRACE1_FN << "TLS AsyncShutdown failed (non-fatally) for transfer of "
-                    << *current_file_
-                    << " for " << *this;
+        LOG_TRACE1_FN
+            << "TLS AsyncShutdown failed (non-fatally) for transfer of "
+            << *current_file_
+            << " for " << *this;
 
 //         NotifyFailed(yield);
 //         return;

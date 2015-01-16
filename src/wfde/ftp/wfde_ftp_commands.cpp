@@ -1396,7 +1396,7 @@ public:
         /* This command is mandated by RFC 2228 after AUTH, but for TLS
          * it has no function.
          *
-         * So we do nothing except, for replying.
+         * So we do nothing, except for replying.
          */
         reply.Reply(FtpReplyCodes::RC_OK);
     }
