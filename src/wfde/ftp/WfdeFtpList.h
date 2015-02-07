@@ -11,6 +11,7 @@
 #include "war_uuid.h"
 #include "log/WarLog.h"
 #include "wfde/ftp_protocol.h"
+#include "war_impl.h"
 
 /* I don't like using namespaces in header-files, but this makes sense
  * as this header-file is actually an implementation detail used by
@@ -30,7 +31,7 @@ public:
 
     int CalculateSize(const FileListIterator& fli) const noexcept {
 
-        return approx_size_ = (fli.GetName().size() + 64);
+        return approx_size_ = static_cast<int>(fli.GetName().size() + 64);
     }
 
     int PrintIt(char *buffer, const FileListIterator& fli) const noexcept {
@@ -65,7 +66,7 @@ public:
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
         struct tm tm{};
-        if (UNLIKELY(!gmtime_r(&fli.GetModifyTime().tv_sec, &tm))) {
+        if (UNLIKELY(!war_gmtime(fli.GetModifyTime().tv_sec, tm))) {
             tm.tm_mday = 1; // Just fix it so we get a valid listing
         }
 
@@ -91,7 +92,7 @@ public:
         *cur++ = '\r';
         *cur++ = '\n';
 
-        return cur - buffer;
+        return static_cast<int>(cur - buffer);
     }
 
 private:
@@ -107,7 +108,7 @@ public:
 
     int CalculateSize(const FileListIterator& fli) const noexcept {
 
-        return fli.GetName().size() + 2;
+        return static_cast<int>(fli.GetName().size() + 2);
     }
 
     int PrintIt(char *buffer, const FileListIterator& fli) const noexcept {
@@ -120,7 +121,7 @@ public:
         *cur++ = '\r';
         *cur++ = '\n';
 
-        return cur - buffer;
+        return static_cast<int>(cur - buffer);
     }
 };
 
@@ -134,7 +135,7 @@ public:
 
     int CalculateSize(const FileListIterator& fli) const noexcept {
 
-        return approx_size_ = (fli.GetName().size() + 128);
+        return approx_size_ = static_cast<int>(fli.GetName().size() + 128);
     }
 
     int PrintIt(char *buffer, const FileListIterator& fli) const noexcept {
@@ -247,7 +248,7 @@ public:
         *cur_++ = '\n';
 
         WAR_ASSERT((cur_ - buffer) <= approx_size_);
-        return cur_ - buffer;
+        return static_cast<int>(cur_ - buffer);
     }
 
 private:

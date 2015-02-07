@@ -1,2 +1,5 @@
+#pragma once
 // Build Configuration settings for WFDE
 //
+
+#cmakedefine WFDE_WITH_TLS 1

@@ -3,9 +3,11 @@
 #include <boost/program_options.hpp>
 
 #include <log/WarLog.h>
-#include <wfde/wfde.h>
 #include "war_error_handling.h"
 
+#ifdef WIN32
+#   include "win/minidump.h"
+#endif
 #include <tasks/WarThreadpool.h>
 
 #include "AuthManager.h"
@@ -27,7 +29,9 @@ struct CmdLineOptions
 {
     int num_io_threads {0};
     int max_io_thread_queue_capacity {1024 * 64};
+#ifndef WIN32
     bool daemon {false};
+#endif
     std::string conf_file {"wfded.conf"};
 };
 
@@ -51,7 +55,9 @@ bool ParseCommandLine(int argc, char *argv[], log::LogEngine& logger,
             "Name of the log-file")
         ("truncate-log", po::value<bool>()->default_value(true),
             "Truncate the log-file if it already exists")
+#ifndef WIN32
         ("daemon", po::value<bool>(&conf.daemon), "Run as a system daemon")
+#endif
         ;
 
     po::options_description performance("Performance Options");
@@ -80,7 +86,12 @@ bool ParseCommandLine(int argc, char *argv[], log::LogEngine& logger,
         return false;
     }
 
-    if (!conf.daemon && vm.count("console-log")) {
+    if (
+#ifndef WIN32
+        !conf.daemon && 
+#endif
+        vm.count("console-log")
+    ) {
         logger.AddHandler(make_shared<log::LogToStream>(cout, "console",
             log::LogEngine::GetLevelFromName(vm["console-log"].as<string>())));
     }
@@ -103,8 +114,11 @@ void SleepUntilDoomdsay()
 {
     io_service_t main_thread_service;
 
-    boost::asio::signal_set signals(main_thread_service, SIGINT, SIGTERM,
-                                    SIGQUIT);
+    boost::asio::signal_set signals(main_thread_service, SIGINT, SIGTERM
+#ifdef SIGQUIT
+        ,SIGQUIT
+#endif
+        );
     signals.async_wait([](boost::system::error_code /*ec*/, int signo) {
 
         LOG_INFO << "Reiceived signal " << signo << ". Shutting down";
@@ -164,21 +178,32 @@ int main(int argc, char *argv[])
     log::LogEngine logger;
     CmdLineOptions options;
 
+#ifdef WIN32
+    /*
+     * Enable minidump generation if the application crash under Windows
+     */
+    EnableMinidump("wfded");
+#endif
+
     if (!ParseCommandLine(argc, argv, logger, options))
         return -1;
 
     LOG_INFO << "wfded " << wfde::Version() << " starting up";
 
     try {
-        /* Create a configuration */
+        /* 
+         * Create a configuration 
+         */
         Configuration::ptr_t conf = war::wfde::Configuration::GetConfiguration(
             options.conf_file);
         WAR_ASSERT(conf != nullptr);
 
+#ifndef WIN32
         if (options.daemon) {
             LOG_INFO << "Switching to system daemon mode";
             daemon(1, 0);
         }
+#endif
 
         /*! Create a thread-pool */
         Threadpool thread_pool(options.num_io_threads,

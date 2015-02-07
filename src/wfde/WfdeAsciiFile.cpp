@@ -92,7 +92,7 @@ void WfdeAsciiFile::SetBytesWritten(const size_t bytes)
         << ' ' << *this;
 #endif
 
-    WAR_ASSERT(bytes_written <= (bytes * 2));
+	WAR_ASSERT(bytes_written <= static_cast<decltype(bytes_written)>(bytes * 2));
 
     file_->SetBytesWritten(bytes_written);
 }

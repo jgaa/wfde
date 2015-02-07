@@ -13,8 +13,8 @@ set(HEADERS
 	)
 
 if (WIN32)
-	ADD_MSVC_PRECOMPILED_HEADER(war_tests.h pch.cpp "${ACTUAL_SOURCES}")
-	add_definitions(-DWAR_PCH)
+	ADD_MSVC_PRECOMPILED_HEADER(war_tests.h pch.cpp ACTUAL_SOURCES)
+	add_definitions(-DWFDE_PCH)
 	set(SOURCES ${ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
 else()
 	set(SOURCES ${ACTUAL_SOURCES})
@@ -26,7 +26,7 @@ add_executable(wfde_unit_tests ${SOURCES})
 target_link_libraries(wfde_unit_tests
     ${DEFAULT_LIBRARIES}
     wfde
-    boost_unit_test_framework)
+    ${BOOST_UNIT_TEST_FRAMEWORK})
 
 add_test(WFDE_UNITTESTS wfde_unit_tests)
 

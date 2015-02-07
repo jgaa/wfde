@@ -38,6 +38,26 @@ public:
 private:
     void MapRegion(const std::size_t wantBytes); // Map the region_ according to pos_
     std::pair<std::size_t, std::size_t> GetBufferValues(const std::size_t bytes);
+    void MapFile() {
+        UmapRegion();
+        file_ = boost::interprocess::file_mapping(path_.string().c_str(), mode_);
+        have_mapped_file_ = true;
+    }
+
+    void UmapRegion() {
+        if (have_mapped_region_) {
+            region_ = boost::interprocess::mapped_region();
+            have_mapped_region_ = false;
+        }
+    }
+
+    void UnmapFile() {
+        if (have_mapped_file_) {
+            UmapRegion();
+            file_ = boost::interprocess::file_mapping();
+            have_mapped_file_ = false;
+        }
+    }
 
     fpos_t pos_ = 0;
     const boost::filesystem::path path_;
@@ -57,6 +77,8 @@ private:
     bool do_truncate_ = false; // Adjust the file-size to end_of_file_pos_ when
         // we close the file.
     bool closed_ = false;
+    bool have_mapped_region_ = false;
+    bool have_mapped_file_ = false;
 };
 
 

@@ -7,6 +7,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/utility/string_ref_fwd.hpp>
 
+#include <wfde/wfde_config.h>
+#include <war_basics.h>
 #include <war_error_handling.h>
 #include <war_asio.h>
 

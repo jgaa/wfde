@@ -130,7 +130,7 @@ public:
     }
 
     bool IsEnabled(const Facts fact) const noexcept {
-        return fact_bits_ & (1 << static_cast<int>(fact));
+        return (fact_bits_ & (1 << static_cast<int>(fact))) == 1;
     }
 
     void Enable(const std::string& name) {
@@ -244,8 +244,10 @@ struct FtpState
     std::unique_ptr<PasvAcceptor> pasv;
     bool list_hidden_files = false;
     std::string login_name;
+#ifdef WFDE_WITH_TLS
     bool cc_is_encrypted = false;
     bool encrypt_transfers = false;
+#endif
     std::vector<task_t> tasks_pending_after_reply;
 
 };
@@ -269,8 +271,8 @@ public:
 
     FtpCmd(const std::string& name, const std::string help = "",
            const std::string& syntax = "", const std::string& feat = "")
-    : regex_(syntax, boost::regex::icase), help_{help}, name_{name}
-    , feat_{feat}
+    : regex_(syntax, boost::regex::icase), help_(help), name_(name)
+    , feat_(feat)
     {}
 
     virtual ~FtpCmd() {}

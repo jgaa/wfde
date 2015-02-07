@@ -252,7 +252,7 @@ public:
                FtpReply& reply) override
     {
 
-        const std::string pwd(param);
+        const std::string pwd(param.to_string());
 
         if (session.AuthenticateWithPasswd(state.login_name, pwd)) {
             state.is_logged_in = true;
@@ -294,7 +294,7 @@ public:
             + string(match[3].first, match[3].second) + "."
             + string(match[4].first, match[4].second);
 
-        auto ip = boost::asio::ip::address::from_string(ip_str);
+        auto ip = boost::asio::ip::address_v4::from_string(ip_str);
 
         state.SetPort({ip, port});
         reply.Reply(FtpReplyCodes::RC_OK);
@@ -985,13 +985,13 @@ public:
             string command{param.begin(), param.end()};
             boost::to_upper(command);
 
-            auto cmd = cmds_.find(command);
-            if (cmd == cmds_.end()) {
+            auto my_cmd = cmds_.find(command);
+            if (my_cmd == cmds_.end()) {
                 reply.Reply(FtpReplyCodes::RC_SYNTAX_ERROR_IN_PARAMS)
                     << "Command '" << command  << "' not found.";
             } else {
                 reply.Reply(FtpReplyCodes::RC_HELP)
-                    << cmd->second->GetName() << ' ' << cmd->second->GetHelp();
+                    << my_cmd->second->GetName() << ' ' << my_cmd->second->GetHelp();
             }
         } else {
             std::ostringstream help;
@@ -999,10 +999,10 @@ public:
             help.fill(' ');
             auto col = 0;
             static const string crlf("\r\n");
-            for(const auto& cmd: cmds_) {
+            for(const auto& c: cmds_) {
                 if (!(col++ % 8))
                     help << crlf;
-                help << std::setw(6) << std::left << cmd.first;
+                help << std::setw(6) << std::left << c.first;
             }
             reply.VerboseReply(FtpReplyCodes::RC_HELP) << help.str();
         }
@@ -1343,12 +1343,15 @@ private:
             << "Structure=File, "
             << "Type=" << state.GetType() << ", "
             << "Rest offset=" << state.rest
+#ifdef WFDE_WITH_TLS
             << ", CC-TLS=" << state.cc_is_encrypted
             << ", PROT=" << (state.encrypt_transfers ? "P" : "C")
+#endif
             ;
     }
 };
 
+#ifdef WFDE_WITH_TLS
 class FtpCmdAuth : public FtpCmd
 {
 public:
@@ -1424,6 +1427,7 @@ public:
         reply.Reply(FtpReplyCodes::RC_OK);
     }
 };
+#endif // TLS
 
 class DefaultFtpCmds
 {
@@ -1470,9 +1474,11 @@ public:
         Add(make_unique<FtpCmdMlst>());
         Add(make_unique<FtpCmdPasv>());
         Add(make_unique<FtpCmdStat>());
+#ifdef WFDE_WITH_TLS
         Add(make_unique<FtpCmdAuth>());
         Add(make_unique<FtpCmdPbsz>());
         Add(make_unique<FtpCmdProt>());
+#endif
 
         // Insert all the added commands into the default list that we hand
         // out to session instances.

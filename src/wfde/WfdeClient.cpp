@@ -21,7 +21,7 @@ namespace wfde {
 namespace impl {
 
 WfdeClient::WfdeClient(std::string loginName, const boost::uuids::uuid& uuid)
-: login_name_{move(loginName)}, uuid_(uuid)
+: login_name_(move(loginName)), uuid_(uuid)
 {
 }
 

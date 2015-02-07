@@ -1,4 +1,5 @@
 
+//#define BOOST_TEST_MAIN WfdeTests
 #define BOOST_TEST_MODULE WfdeTests
 
 #include "war_tests.h"

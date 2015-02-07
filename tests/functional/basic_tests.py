@@ -23,6 +23,8 @@ config['ftp-root'] = os.getcwd() + '/test-tmp/ftproot'
 config['workdir'] = os.getcwd() + '/test-tmp/client'
 config['server-config'] =  os.getcwd() + '/test-tmp/wfded.conf'
 
+# Set to false under Windows for now
+config['test-tls'] = True
 
 class FtpTest:
     def __init__(self, conf):
@@ -37,8 +39,8 @@ class FtpTest:
         self.dl_files_cache = self.workdir + '/dlfiles.cache'
         self.skip_big_files = True
         self.disable_print = False
-        self.use_tls = False
-        self.use_transfer_tls = True
+        self.use_tls = conf['test-tls']
+        self.use_transfer_tls = conf['test-tls']
 
         for path in (self.ftp_root, self.workdir):
             if not os.path.exists(path):
@@ -984,7 +986,12 @@ if __name__ == '__main__':
     print('Start the server with config-path to ' + config['server-config'])
     input('Press ENTER when ready')
 
-    for tls in (False, True):
+    if config['test-tls']:
+	    tls_loops = (False, True)
+    else:
+        tls_loops = {False}
+
+    for tls in tls_loops:
         print('Testing with TLS = ' + str(tls))
         testcase.use_tls = tls
 

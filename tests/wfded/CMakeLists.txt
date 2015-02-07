@@ -9,7 +9,7 @@ set(HEADERS
     )
 
 if (WIN32)
-    ADD_MSVC_PRECOMPILED_HEADER(wfded.h pch.cpp "${FTPD_ACTUAL_SOURCES}")
+    ADD_MSVC_PRECOMPILED_HEADER(wfded.h pch.cpp FTPD_ACTUAL_SOURCES)
     add_definitions(-DWAR_PCH)
     set(FTPD_SOURCES ${FTPD_ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
 else()

@@ -84,7 +84,8 @@ unsigned WfdeProtocol::AddInterfaces()
         try {
             endpoints = resolver.resolve({if_ip, if_port});
         } catch(const boost::exception& ex) {
-            LOG_ERROR_FN << "Failed to resolve " << log::Esc(if_name);
+            LOG_ERROR_FN << "Failed to resolve " << log::Esc(if_name)
+                << ": " << ex;
             throw;
         }
         for(;endpoints != end; ++endpoints) {

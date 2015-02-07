@@ -65,7 +65,7 @@ WfdeFile::WfdeFile(const boost::filesystem::path& path, FileOperation operation)
 
     if (must_exist) {
         if (!boost::filesystem::is_regular_file(st)) {
-            LOG_NOTICE_FN << "The path " << log::Esc(path.c_str())
+            LOG_NOTICE_FN << "The path " << log::Esc(path.string())
                 << " is not a regular file";
             WAR_THROW_T(ExceptionNotFound, "Not a file");
         }
@@ -81,7 +81,7 @@ WfdeFile::WfdeFile(const boost::filesystem::path& path, FileOperation operation)
     }
 
     end_of_file_pos_ = file_size_ = boost::filesystem::file_size(path_);
-    file_ = boost::interprocess::file_mapping(path.c_str(), mode_);
+    MapFile();
 
     if (operation == FileOperation::APPEND) {
         Seek(end_of_file_pos_);
@@ -118,6 +118,9 @@ File::mutable_buffer_t WfdeFile::Write(size_t bytes)
             << " from " << GetSize() << " to " << min_file_size << " bytes";
 #endif
 
+#ifdef WIN32
+        UnmapFile();
+#endif
         boost::filesystem::resize_file(path_, min_file_size);
         file_size_ = min_file_size;
     }
@@ -187,6 +190,9 @@ pair< File::fpos_t, size_t > WfdeFile::GetBufferValues(const std::size_t bytes)
 
 void WfdeFile::MapRegion(const std::size_t wantBytes)
 {
+    if (!have_mapped_file_) {
+        MapFile();
+    }
     const auto file_size = GetSize();
     auto start_segment = pos_ / segment_size_;
     region_start_ = start_segment * segment_size_;
@@ -196,6 +202,7 @@ void WfdeFile::MapRegion(const std::size_t wantBytes)
 
     region_ = boost::interprocess::mapped_region(file_, mode_, region_start_,
                                                  region_len);
+    have_mapped_region_ = true;
     region_.advise(boost::interprocess::mapped_region::advice_sequential);
 
 #ifdef DEBUG
@@ -231,8 +238,7 @@ void WfdeFile::Close()
     if (!closed_) {
         closed_ = false;
         LOG_TRACE2_FN << "Closing " << *this;
-        region_ = boost::interprocess::mapped_region();
-        file_ = boost::interprocess::file_mapping();
+        UnmapFile();
 
         if (do_truncate_
             && (file_size_ > end_of_file_pos_)

@@ -1,4 +1,5 @@
 
+	
 # Create wfded's configuration-data and write it to disk
 def CreateServerConfig(config):
     template = '''
@@ -67,7 +68,8 @@ Server {
     }
 }
 '''
-    conf_data = template.replace('$IP$', config['host']).replace('$PORT$', str(config['port'])).replace('$FTPROOT$', config['ftp-root'])
+
+    conf_data = template.replace('$IP$', config['host']).replace('$PORT$', str(config['port'])).replace('$FTPROOT$', config['ftp-root'].replace('\\','/'))
     f = open(config['server-config'], 'w');
     f.write(conf_data)
     f.close()

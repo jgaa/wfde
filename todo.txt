@@ -2,8 +2,13 @@
 
 BUGS:
 -------------------------------------------------------------
-
-
+ Windows port:
+   - Crashes early during ft.
+   - No date/time in log-file.
+   - Crashes in ssl context when starting up.
+   v Backslash in config-file / path (interperated as escape by boost)
+   - Ascii APPE is broken (fails FT)
+   - FT for dir-listings fails because we miss . and .. entries
 
 REFACTORING:
 -------------------------------------------------------------
@@ -92,6 +97,13 @@ STEPS:
  v Add auth manager
  v Add auth commands
  v Add permissions to the user and merge it upon login
+ ~ Windows port
+   v Test without TLS
+   - Add "." and ".." for directory listings
+   - Re-enable TLS
+   - Add minidump-support
+   - Add native service support
+   - Add protection againts exploits trough "magic" file names (like "con")
 
 ROADMAP:
 -------------------------------------------------------------

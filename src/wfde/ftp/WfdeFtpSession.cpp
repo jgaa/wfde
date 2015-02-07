@@ -45,7 +45,7 @@ boost::string_ref WfdeFtpSessionInput::FetchNextCommand()
     }
 
     while(true) {
-        auto bytes_to_read = &input_buffer_[input_buffer_.size()]
+        auto bytes_to_read = (&input_buffer_[0] + input_buffer_.size())
             - current_buffer_;
 
         if (ftp_ses_) {
@@ -284,7 +284,7 @@ void WfdeFtpSession::OnCommand(FtpCmd& cmd, const boost::string_ref& request)
               "Need PASV or POST before "s + cmd.GetName());
         return;
     }
-
+#ifdef WFDE_WITH_TLS
     if (cmd.MustHaveEncryption() && !state_.cc_is_encrypted) {
         LOG_DEBUG_FN << "Control Channel must be encrypted for "
             << log::Esc(curr_cmd_name_)
@@ -295,7 +295,7 @@ void WfdeFtpSession::OnCommand(FtpCmd& cmd, const boost::string_ref& request)
               "Encryption is required for " + cmd.GetName());
         return;
     }
-
+#endif
     // Ugly and error-prone way to get a pointer to the start of the command parameters
     // TODO: Replace with something better.
     auto remaining = request.size();
@@ -492,7 +492,11 @@ void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)
         return;
     }
 
+#ifdef WFDE_WITH_TLS
     auto sck = make_shared<tls_tcp_socket_t>(GetPipeline());
+#else
+    auto sck = make_shared<tcp_socket_t>(GetPipeline());
+#endif
 
     //boost::asio::ip::tcp::socket sck(GetPipeline().GetIoService());
 
@@ -530,6 +534,8 @@ void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)
     };
 
     transfer_sck_ = sck;
+
+#ifdef WFDE_WITH_TLS
     if (state_.encrypt_transfers) {
         try {
             LOG_TRACE1_FN << "Upgrading transfer socket "
@@ -544,7 +550,7 @@ void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)
             return;
         )
     }
-
+#endif
     try {
         if (state_.transfer == FtpState::Transfer::OUTGOING) {
             SendFile(yield);
@@ -818,7 +824,7 @@ void WfdeFtpSession::StartTls()
 {
     LOG_DEBUG_FN << "Will try to switch to encrypted mode on the "
         << "control connection for " << *this;
-
+#ifdef WFDE_WITH_TLS
     try {
         socket_ptr_->UpgradeToTls(*yield_);
         state_.cc_is_encrypted = true;
@@ -826,7 +832,10 @@ void WfdeFtpSession::StartTls()
         LOG_ERROR_FN << "Failed to upgrade to TLS. I have to drop the session "
             << *this;
         socket_ptr_->Close();
-    )
+        )
+#else
+    WAR_ASSERT(false && "TLS is not supported in this build");
+#endif
 }
 
 

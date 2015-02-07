@@ -6,6 +6,7 @@
 #include "WfdeServer.h"
 #include "WfdeInterface.h"
 #include "WfdeTlsSocket.h"
+#include "WfdeSocket.h"
 #include "log/WarLog.h"
 
 using namespace std;
@@ -95,8 +96,11 @@ void WfdeInterface::Accept(boost::asio::yield_context yield)
         boost::system::error_code ec;
 
         auto& some_pipeline = threadpool.GetAnyPipeline();
-
+#ifdef WFDE_WITH_TLS
         auto socket = make_shared<tls_tcp_socket_t>(some_pipeline);
+#else
+        auto socket = make_shared<tcp_socket_t>(some_pipeline);
+#endif
         LOG_TRACE1_FN << "Created socket " << *socket
             << " on " << some_pipeline
             << " from " << *this;

@@ -3,14 +3,22 @@
 # This project is currently being developed with Debian "testing", using the
 # latest clang++ and g++ compilers and libraries.
 #
+# Supported compilers:
+#  - Clang 3.5.1 [Tested with Debian jessie]
+#  - g++ 4.9     [Tested with Debian jessie]
+#  - Microsoft Visual Studio 2015 preview [Tested with Windiows 7]
 
 cmake_minimum_required(VERSION 3.0)
-project (Warlib)
+project (wfde)
 
 enable_testing()
 
 if (NOT DEFINED WITH_APIDOC)
 	option(WITH_APIDOC "Generate Doxygen documentation")
+endif()
+
+if (NOT DEFINED WFDE_WITH_TLS)
+	option(WFDE_WITH_TLS "Enable TLS" ON)
 endif()
 
 if (NOT DEFINED CMAKE_BUILD_TESTING )
@@ -32,11 +40,11 @@ set(DEFAULT_LIBRARIES ${DEFAULT_LIBRARIES}
     )
 
 include(${WARLIB_ROOT_DIR}/cmake_scripts/boost.cmake)
-
+include(${WARLIB_ROOT_DIR}/cmake_scripts/pch.cmake)
 
 # We create a configuration file so that other code that
 # include our header files gets the correct configuration.
-set(CONF_PATH ${PROJECT_SOURCE_DIR}/include/wfde_config.h)
+set(CONF_PATH ${PROJECT_SOURCE_DIR}/include/wfde/wfde_config.h)
 
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
@@ -45,6 +53,38 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 -o3 ")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 -o0 -g ")
     add_definitions(-D__USE_LARGEFILE64=1 -D__USE_FILE_OFFSET64=1 -Wall -fPIC -std=c++1y -pthread)
+else()
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 ")
+	# We will support windows from Windows Vista
+	add_definitions(-D_WIN32_WINNT=0x0600)
+endif()
+
+if (OPENSSL_ROOT)
+	include_directories(${OPENSSL_ROOT}/include)
+	link_directories(${OPENSSL_ROOT}/lib/VC)
+endif()
+
+if (BOOST_ROOT)
+	if (NOT BOOST_INCLUDE_DIR)
+		set(BOOST_INCLUDE_DIR ${BOOST_ROOT})
+	endif()
+
+	if (NOT BOOST_LIBRARY_DIRS)
+		set(BOOST_LIBRARY_DIRS ${BOOST_ROOT}/stage/lib CACHE PATH "path to prebuilt library")
+	endif()
+else()
+    message(STATUS "No BOOST_ROOT set. Assuming that boost is installed and available for the compiler")
+endif()
+
+if (BOOST_INCLUDE_DIR)
+	message(STATUS "Setting boost include-dir to: ${BOOST_INCLUDE_DIR}")
+	include_directories(${BOOST_INCLUDE_DIR})
+endif()
+
+if (BOOST_LIBRARY_DIRS)
+	message(STATUS "Setting boost libdir to: ${BOOST_LIBRARY_DIRS}")
+	link_directories(${BOOST_LIBRARY_DIRS} )
 endif()
 
 

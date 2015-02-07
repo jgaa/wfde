@@ -141,8 +141,9 @@ protected:
     void UpdateIdleTime() {
         const auto now = std::chrono::steady_clock::now();
         const std::chrono::steady_clock::duration duration{now - last_activity_time_};
-        cached_idle_time_ = std::chrono::duration_cast<std::chrono::seconds>(
-            duration).count();
+        cached_idle_time_ = static_cast<int>(
+			std::chrono::duration_cast<std::chrono::seconds>(
+            duration).count());
     }
 
 private:
@@ -155,7 +156,7 @@ private:
     std::chrono::steady_clock::time_point last_activity_time_;
     std::chrono::steady_clock::time_point last_activity_cached_time_;
     mutable std::mutex mutex_;
-    std::atomic_int_fast32_t cached_idle_time_; // seconds
+    std::atomic_uint_fast32_t cached_idle_time_; // seconds
 #ifdef DEBUG
     const std::thread::id owning_thread_id_ = std::this_thread::get_id();
 #endif
