@@ -1,8 +1,9 @@
-WFDE is built using cmake. The development is done with clang++ 3.5,
-but I also try to keep it working with g++ 4.9.
+WFDE is built using cmake. 
 
-I will try to port it to Windows with the preview of Visual Studio 2015 in
-January 2015.
+Supported compilers:
+  clang++ 3.5
+  g++ 4.9
+  Visual Studio 2015 CTP 5
 
 
 This project depends on warlib (for logging, error-handling and the thread-pool).
@@ -23,5 +24,5 @@ To clone it:
 Please use the project-page at Sourceforge for bug-reports, questions and
 suggestions: http://sourceforge.net/projects/wfde/
 
-December 2015, jgaa.
+February 2015, jgaa.
 
