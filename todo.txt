@@ -145,7 +145,8 @@ ROADMAP:
         - Transfer with and without Transfer Encryption
  - Add tmp filenames for files being uploaded.
  - Add IPv6 support for FTP
- - Port to Windows
+ ~ Port to Windows
+ - Port to OS/X
  - Add statistics manager
  - Do proper performance tests
  - Add HTTP protocol
