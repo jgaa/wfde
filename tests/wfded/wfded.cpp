@@ -21,7 +21,7 @@ using namespace wfde::test;
 /* Default configuration data
  *
  * At this stage in the development, the command-line options are detached
- * from the hard-coded test configuratiin data. This will change before
+ * from the hard-coded test configuration data. This will change before
  * beta release.
  */
 

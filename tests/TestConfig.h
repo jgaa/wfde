@@ -23,6 +23,10 @@ public:
     std::string GetValue(const char* path, const char *defaultVal) const override {
         return conf_->GetValue((root_path_ + path).c_str(), defaultVal);
     }
+    
+    bool HaveValue(const char* path) const override {
+        return conf_->HaveValue(path);
+    }
 
     bool CanWrite(const char* path) override { return conf_->CanWrite(); }
 
@@ -66,6 +70,10 @@ public:
             return defaultVal;
         }
         return it->second;
+    }
+    
+    virtual bool HaveValue(const char* path) const override {
+        return config_.find(path) != config_.end();
     }
 
     bool CanWrite(const char* path) override { return true; }

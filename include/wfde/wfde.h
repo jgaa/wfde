@@ -96,6 +96,15 @@ public:
      */
     virtual std::string GetValue(const char* path,
         const char *defaultVal = nullptr) const = 0;
+       
+    /*! Check if we have a value
+     *
+     * \param path something like
+     *     "/Server/Config/Log/filename"
+     *
+     * \returns True if the node exists.
+     */
+    virtual bool HaveValue(const char* path) const = 0;
 
     /* Check if the program has write-access to the configuration
      * node given as path.

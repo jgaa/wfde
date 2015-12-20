@@ -33,6 +33,10 @@ public:
             return conf_->GetValue((root_path_ + Sep(path) + path).c_str(),
                                    defaultVal);
         }
+        
+        bool HaveValue(const char* path) const override {
+            return conf_->HaveValue(path);
+        }
 
         bool CanWrite(const char* path) override {
             return conf_->CanWrite();
@@ -69,6 +73,8 @@ public:
     }
 
     std::string GetValue(const char* path, const char* defaultVal = nullptr) const;
+    
+    bool HaveValue(const char* path) const override;
 
     bool CanWrite(const char* path) override { return true; }
 

@@ -23,6 +23,12 @@ string WfdeConfigurationPropertyTree::GetValue(const char* path, const char* def
     return data_.get(ToPath(path), defaultVal ? defaultVal : "");
 }
 
+bool WfdeConfigurationPropertyTree::HaveValue(const char* path) const
+{
+    WAR_ASSERT(path);
+    return data_.get_child_optional(ToPath(path)) != nullptr;
+}
+
 void WfdeConfigurationPropertyTree::SetValue(const char* path, string value)
 {
     WAR_ASSERT(path);
