@@ -17,7 +17,7 @@ public:
 
 protected:
     virtual size_t ReadSome(char* p, const size_t bytes) override {
-        if (index_ < data_.size()) {
+        if (index_ < static_cast<decltype(index_)>(data_.size())) {
 
             const auto& curr_data = data_[index_++];
             assert(bytes >= curr_data.size());

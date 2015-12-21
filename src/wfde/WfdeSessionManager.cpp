@@ -90,7 +90,7 @@ void WfdeSessionManager::CloseSession(const boost::uuids::uuid& id)
     const auto thd_id = ref->GetThreadId();
 
     WAR_ASSERT(thd_id >= 0);
-    WAR_ASSERT(thd_id < stubs_.size());
+    WAR_ASSERT(thd_id < static_cast<decltype(thd_id)>(stubs_.size()));
 
     auto& stub = stubs_[thd_id];
     WAR_ASSERT(stub);
@@ -117,7 +117,7 @@ void WfdeSessionManager::CloseSession(const boost::uuids::uuid& id)
 void WfdeSessionManager::ScheduleThdTimer(const int id)
 {
     WAR_ASSERT(id >= 0);
-    WAR_ASSERT(id < stubs_.size());
+    WAR_ASSERT(id < static_cast<decltype(id)>(stubs_.size()));
     auto& stub = stubs_[id];
 
     WAR_ASSERT(stub);
@@ -129,7 +129,7 @@ void WfdeSessionManager::ScheduleThdTimer(const int id)
 void WfdeSessionManager::OnThdTimer(const int id) {
 
     WAR_ASSERT(id >= 0);
-    WAR_ASSERT(id < stubs_.size());
+    WAR_ASSERT(id < static_cast<decltype(id)>(stubs_.size()));
     auto& stub = stubs_[id];
 
     if (!stub)
