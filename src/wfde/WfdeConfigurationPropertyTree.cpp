@@ -14,7 +14,12 @@ WfdeConfigurationPropertyTree::WfdeConfigurationPropertyTree(const string& path)
 : path_{path}
 {
     // Read the configuration.
-    boost::property_tree::read_info(path, data_);
+    if (boost::filesystem::exists(path)) {
+        boost::property_tree::read_info(path, data_);
+    } else {
+        LOG_ERROR << "File " << log::Esc(path) << " don't exist.";
+        WAR_THROW_T(ExceptionNotFound, path);
+    }
 }
 
 string WfdeConfigurationPropertyTree::GetValue(const char* path, const char* defaultVal) const
