@@ -19,7 +19,7 @@ namespace wfde {
 namespace impl {
 
 WfdeServer::WfdeServer(Threadpool& ioThreapool, Configuration::ptr_t& conf)
-: WfdeEntity(nullptr, conf), io_threadpool_{ioThreapool}
+: WfdeEntity(nullptr, conf, Type::SERVER), io_threadpool_{ioThreapool}
 {
     //
     LOG_DEBUG << "Server " << log::Esc(name_) << " is constructed.";

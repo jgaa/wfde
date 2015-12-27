@@ -136,6 +136,14 @@ public:
      * \param confFile Configuration file that contains the configuration.
      */
     static ptr_t GetConfiguration(const std::string& confFile);
+    
+    /*! Create an empty instance of a Configuration object
+     * 
+     * Many objects takes a configuration as argument. This
+     * factory may be used to create such instances where the
+     * data is not provided by a configuration file.
+     */
+    static ptr_t CreateInstance();
 };
 
 
@@ -412,15 +420,33 @@ class Entity
 public:
     using ptr_t = std::shared_ptr<Entity>;
     using children_t = std::vector<Entity::ptr_t>;
+    using id_t = boost::uuids::uuid;
+    
+    enum Type {
+        SERVER,
+        HOST,
+        PROTOCOL,
+        INTERFACE
+    };
 
     Entity() = default;
     Entity(const Entity&) = delete;
     Entity& operator = (const Entity&) = delete;
 
     virtual ~Entity() = default;
+    
+    virtual Type GetType() const noexcept = 0;
 
     /*! Return the unique name, in the context of the parent entity */
     virtual std::string GetName() const = 0;
+        
+    /*! Get the unique ID for this object 
+     *
+     * The ID is assigned when the object is created. If the object is loaded
+     * from persistent storage, the ID is likely to be the database id for 
+     * this object.
+     */
+    virtual id_t GetId() const = 0;
 
     /*! Get the parent entity
      *
@@ -1128,6 +1154,10 @@ public:
      */
     virtual Client::ptr_t Login(const std::string& name,
                                 const std::string& pwd) = 0;
+                                
+    /*! Notify the auth-manager that it is assigned to this host
+     */
+    virtual void Join(Host::ptr_t host) = 0;
 
 };
 
@@ -1147,12 +1177,11 @@ Server::ptr_t CreateServer(Configuration::ptr_t conf,
 /*! Fabric to create an instance of a Host
  *
  *  \param parent Server to join the host to
- *  \param
  *
  *  Some Configuration settings:
  *      "/Name" : Name of the host. Defaults to "Default".
  */
-Host::ptr_t CreateHost(Server& parent, AuthManager& authManager,
+Host::ptr_t CreateHost(Server& parent, AuthManager::ptr_t authManager,
                        const Configuration::ptr_t& conf);
 
 

@@ -160,6 +160,8 @@ public:
             << log::Esc(cli_it->second->GetLoginName());
         return std::make_shared<ClientProxy>(cli_it->second);
     }
+    
+    void Join(Host::ptr_t) override {};
 
 private:
     std::map<std::string, std::shared_ptr<ClientImpl>, ciLessLibC> clients_;

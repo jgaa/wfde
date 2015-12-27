@@ -149,7 +149,7 @@ auto PrepareServers(const Configuration::ptr_t& conf, Threadpool& threadPool)
             auto auth_mgr = make_shared<wfded::AuthManagerImpl>(
                 *conf->GetConfigForPath(thishost_path + "/Users"s));
 
-            auto host = CreateHost(*server, *auth_mgr,
+            auto host = CreateHost(*server, auth_mgr,
                 conf->GetConfigForPath(thishost_path));
             auto perms = CreatePermissions(
                 conf->GetConfigForPath(thishost_path + "/Paths"s));

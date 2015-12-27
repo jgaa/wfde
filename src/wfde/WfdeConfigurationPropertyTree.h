@@ -88,10 +88,18 @@ public:
         return std::shared_ptr<WfdeConfigurationPropertyTree>(
             new WfdeConfigurationPropertyTree(path));
     }
+    
+    static auto CreateInstance() {
+        // Must use new, since make_shared don't has access to the
+        // private constructor.
+        return std::shared_ptr<WfdeConfigurationPropertyTree>(
+            new WfdeConfigurationPropertyTree());
+    }
 
 private:
     // Prevent construction on the stack
     WfdeConfigurationPropertyTree(const std::string& path);
+    WfdeConfigurationPropertyTree() = default;
     boost::property_tree::path ToPath(const char *path) const;
     boost::property_tree::ptree data_;
     const std::string path_;

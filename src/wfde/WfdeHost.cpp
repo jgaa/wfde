@@ -15,13 +15,13 @@ namespace war {
 namespace wfde {
 namespace impl {
 
-WfdeHost::WfdeHost(Server& parent, AuthManager& authManager,
+WfdeHost::WfdeHost(Server& parent, AuthManager::ptr_t& authManager,
                    const Configuration::ptr_t& conf)
-    : WfdeEntity(nullptr, conf)
+    : WfdeEntity(nullptr, conf, Type::HOST)
     , long_name_{conf->GetValue("/LongName"
     , WFDE_DEFAULT_HOST_LONG_NAME)}
     , session_manager_{SessionManager::Create(parent.GetIoThreadpool())}
-    , auth_manager_{authManager.shared_from_this()}
+    , auth_manager_{authManager}
 {
     LOG_DEBUG_FN << "Created host: " << log::Esc(name_);
 }
@@ -63,11 +63,12 @@ void WfdeHost::Stop()
 
 } // namespace impl
 
-Host::ptr_t CreateHost(Server& parent, AuthManager& authManager,
+Host::ptr_t CreateHost(Server& parent, AuthManager::ptr_t authManager,
                        const Configuration::ptr_t& conf)
 {
     auto host = make_shared<impl::WfdeHost>(parent, authManager, conf);
     parent.AddHost(host);
+    authManager->Join(host);
     return host;
 }
 

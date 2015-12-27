@@ -51,7 +51,7 @@ private:
 
 
 WfdeProtocol::WfdeProtocol(Host *parent, const Configuration::ptr_t& conf)
-: WfdeEntity(parent, conf)
+: WfdeEntity(parent, conf, Type::PROTOCOL)
 {
     LOG_DEBUG_FN << "Created host: " << log::Esc(name_);
 }

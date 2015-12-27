@@ -38,7 +38,7 @@ namespace impl {
 WfdeInterface::WfdeInterface(Protocol *parent,
                              const boost::asio::ip::tcp::endpoint& endpoint,
                              Configuration::ptr_t& conf)
-: WfdeEntity(parent, conf), endpoint_{endpoint}
+: WfdeEntity(parent, conf, Type::INTERFACE), endpoint_{endpoint}
 {
     LOG_DEBUG_FN << "Created interface: " << log::Esc(name_);
 }

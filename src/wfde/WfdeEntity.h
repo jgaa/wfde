@@ -5,6 +5,7 @@
 #include <type_traits>
 #include "wfde/wfde.h"
 #include "log/WarLog.h"
+#include "war_uuid.h"
 
 namespace war {
 namespace wfde {
@@ -19,17 +20,22 @@ public:
     using parent_t = ParentT;
     using child_t = ChildT;
 
-    WfdeEntity(parent_t* parent, const Configuration::ptr_t& conf)
-    : name_{conf->GetValue("/Name", "Default")}, conf_{conf},  parent_{parent}
+    WfdeEntity(parent_t* parent, const Configuration::ptr_t& conf, Type type)
+    : id_(LoadId(*conf)), name_{conf->GetValue("/Name", "Default")}, conf_{conf}
+    , parent_{parent}, type_{type}
     {
     }
 
     ~WfdeEntity() {}
+    
+    Type GetType() const noexcept override { return type_; }
 
     std::string GetName() const override {
         WAR_ASSERT(!name_.empty());
         return name_;
     }
+    
+    id_t GetId() const override { return id_; };
 
     parent_t *GetParent() const override {
         WAR_ASSERT(parent_);
@@ -122,12 +128,21 @@ protected:
         }
         return ret;
     }
+    
+    static boost::uuids::uuid LoadId(const Configuration& conf) {
+        const auto id = conf.GetValue("/Id", "");
+        if (id.empty())
+            return boost::uuids::random_generator()();
+        return  war::get_uuid_from_string(id);
+    }
 
+    const boost::uuids::uuid id_;
     const std::string name_;
     const Configuration::ptr_t conf_;
     parent_t *parent_ = nullptr;
     Permissions::ptr_t permissions_;
     mutable std::mutex mutex_;
+    Type type_;
 };
 
 } // namespace impl

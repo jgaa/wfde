@@ -9,7 +9,8 @@ using namespace std;
 namespace war {
 namespace wfde {
 namespace impl {
-
+    
+    
 WfdeConfigurationPropertyTree::WfdeConfigurationPropertyTree(const string& path)
 : path_{path}
 {
@@ -76,6 +77,11 @@ Configuration::ptr_t Configuration::GetConfiguration(const std::string& path) {
     LOG_NOTICE << "Reading configuration-file: " << log::Esc(path);
 
     return impl::WfdeConfigurationPropertyTree::CreateInstance(path);
+}
+
+Configuration::ptr_t Configuration::CreateInstance() {
+    
+    return impl::WfdeConfigurationPropertyTree::CreateInstance();
 }
 
 }} // namespace

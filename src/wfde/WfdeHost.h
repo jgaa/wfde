@@ -15,7 +15,7 @@ public:
     using ptr_t = std::shared_ptr<WfdeHost>;
     using wptr_t = std::weak_ptr<WfdeHost>;
 
-    WfdeHost(Server& parent, AuthManager& authManager,
+    WfdeHost(Server& parent, AuthManager::ptr_t& authManager,
              const Configuration::ptr_t& conf);
     ~WfdeHost();
 
