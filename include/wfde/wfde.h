@@ -632,6 +632,21 @@ public:
      * \todo Add IPv6 support for the FTP protocol.
      */
     virtual unsigned AddInterfaces() = 0;
+    
+    /*! Add interface
+     * 
+     * Adds interface(s) defined in the Configuration.
+     * 
+     * @param conf Configuration for the interface.
+     *      /Name be unique within the context of a protocol.
+     *          If unset (empty string), a name will be constructed
+     *          from the IP address and the port.
+     *      /Ip IP address or hostname for the interface.
+     *      /Port Port name or number (for example 'ftp' or '21')
+     * 
+     * @return Returns the number of interfaces that were added.
+     */
+    virtual unsigned AddInterface(const Configuration::ptr_t& conf) = 0;
 
     /*! Start the protocol.
      *
@@ -1205,23 +1220,19 @@ std::shared_ptr<Permissions> CreatePermissions(Configuration::ptr_t conf);
  */
 Protocol::ptr_t CreateProtocol(Host *parent, const Configuration::ptr_t conf);
 
-/*! Fabric to create a Interface
+/*! Fabric to create an Interface
  *
  * \param parent who owns this interface
- *
- * \param name Must be unique within the contect of a protocol.
+ * 
+ * \param name Must be unique within the context of a protocol.
  *      If unset (empty string), a name will be constructed
  *      from the IP address and the port.
  *
- * \param addr IP address to listen to. May be ipv4 or ipv6
- *
- * \param port Port to listen to
- *
- * \param conf Configuration for this interface. May provice extra
+ * \param conf Configuration for this interface. May provide extra
  *      options such as ssl options, SOCKS etc.
  *
- * \Note: You can only have one Interface listening to a certan
- *      port on a certan IP address.
+ * \Note: You can only have one Interface listening to a certain
+ *      port on a certain IP address.
  *
  */
 Interface::ptr_t CreateInterface(Protocol *parent,
@@ -1248,7 +1259,7 @@ void RegisterProtocolFactory(const std::string& name,
 void RegisterDefaultProtocols();
 
 } // namespace wfde
-} // namerspace war
+} // namespace war
 
 /* Operators to aid in logging object data */
 std::ostream& operator << (std::ostream& o, const war::wfde::Server& entity);
@@ -1258,7 +1269,7 @@ std::ostream& operator << (std::ostream& o, const war::wfde::Interface& entity);
 std::ostream& operator << (std::ostream& o, const war::wfde::Socket& sck);
 std::ostream& operator << (std::ostream& o, const war::wfde::Version& ver);
 std::ostream& operator << (std::ostream& o, const war::wfde::Session& ses);
-std::ostream& operator << (std::ostream& o, const war::wfde::Client& ver);
+std::ostream& operator << (std::ostream& o, const war::wfde::Client& cli);
 std::ostream& operator << (std::ostream& o, const war::wfde::File& f);
 std::ostream& operator << (std::ostream& o, const war::wfde::File::FileOperation& op);
 std::ostream& operator << (std::ostream& o, const war::wfde::Permissions& op);

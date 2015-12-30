@@ -68,43 +68,54 @@ unsigned WfdeProtocol::AddInterfaces()
 
     for(const auto name : interfaces) {
         auto path = root + "/" + name.name;
-        const auto if_name = conf_->GetValue(string(path + "/Name").c_str());
-        const auto if_ip = conf_->GetValue(string(path + "/Ip").c_str());
-        const auto if_port = conf_->GetValue(string(path + "/Port").c_str());
-
-        LOG_DEBUG_FN << "Preparing to add interface(s) with base-name "
-            << log::Esc(if_name) << " "
-            << log::Esc(if_ip) << " port "
-            << log::Esc(if_port)
-            << " to " << *this;
-
-        boost::asio::io_service io; // for resolving, no async operations.
-        boost::asio::ip::tcp::resolver resolver(io);
-        boost::asio::ip::tcp::resolver::iterator end, endpoints;
-        try {
-            endpoints = resolver.resolve({if_ip, if_port});
-        } catch(const boost::exception& ex) {
-            LOG_ERROR_FN << "Failed to resolve " << log::Esc(if_name)
-                << ": " << ex;
-            throw;
-        }
-        for(;endpoints != end; ++endpoints) {
-            auto ep = endpoints->endpoint();
-            Interface::ptr_t new_if = CreateInterface(
-                this,
-                if_name + "-" + ep.address().to_string(),
-                endpoints->endpoint(),
-                conf_->GetConfigForPath(path.c_str()));
-
-            ++added_if_cnt;
-            interfaces_.push_back(new_if);
-
-            LOG_DEBUG_FN << "Added interface " << *new_if << " to " << *this;
-        }
+        auto if_conf = conf_->GetConfigForPath(path);
+        added_if_cnt += AddInterface(if_conf);
     }
 
     return added_if_cnt;
 }
+
+unsigned WfdeProtocol::AddInterface(const Configuration::ptr_t& conf)
+{
+    unsigned added_if_cnt{0};
+    
+    const auto if_name = conf_->GetValue("/Name");
+    const auto if_ip = conf_->GetValue("/Ip");
+    const auto if_port = conf_->GetValue("/Port");
+    
+    LOG_DEBUG_FN << "Preparing to add interface(s) with base-name "
+        << log::Esc(if_name) << " "
+        << log::Esc(if_ip) << " port "
+        << log::Esc(if_port)
+        << " to " << *this;
+    
+    boost::asio::io_service io; // for resolving, no async operations.
+    boost::asio::ip::tcp::resolver resolver(io);
+    boost::asio::ip::tcp::resolver::iterator end, endpoints;
+    
+    try {
+        endpoints = resolver.resolve({if_ip, if_port});
+    } catch(const boost::exception& ex) {
+        LOG_ERROR_FN << "Failed to resolve " << log::Esc(if_name)
+        << ": " << ex;
+        throw;
+    }
+    for(;endpoints != end; ++endpoints) {
+        auto ep = endpoints->endpoint();
+        Interface::ptr_t new_if = CreateInterface(
+            this,
+            if_name + "-" + ep.address().to_string(),
+            endpoints->endpoint(), conf);
+
+        ++added_if_cnt;
+        interfaces_.push_back(new_if);
+        
+        LOG_DEBUG_FN << "Added interface " << *new_if << " to " << *this;
+    }
+    
+    return added_if_cnt;
+}
+
 
 void WfdeProtocol::Start()
 {

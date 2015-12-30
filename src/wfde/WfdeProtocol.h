@@ -38,6 +38,7 @@ public:
     }
 
     unsigned AddInterfaces() override;
+    unsigned AddInterface(const Configuration::ptr_t& conf) override;
 
     void Start() override;
     void Stop() override;
