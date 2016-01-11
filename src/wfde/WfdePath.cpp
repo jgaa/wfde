@@ -195,6 +195,37 @@ Path::permbits_t Path::ToPermBits(const initializer_list<PermissionBits>& list) 
     return rval;
 }
 
+Path::permbits_t Path::GetDefaultPermissions() noexcept
+{
+    return impl::WfdePath::Bit(PermissionBits::CAN_LIST)
+        | impl::WfdePath::Bit(PermissionBits::CAN_ENTER)
+        | impl::WfdePath::Bit(PermissionBits::CAN_READ)
+        | impl::WfdePath::Bit(PermissionBits::IS_RECURSIVE);
+}
+
+Path::permbits_t Path::GetDefaultHomePermissions() noexcept
+{
+    return impl::WfdePath::Bit(PermissionBits::CAN_LIST)
+    | impl::WfdePath::Bit(PermissionBits::CAN_ENTER)
+    | impl::WfdePath::Bit(PermissionBits::CAN_READ)
+    | impl::WfdePath::Bit(PermissionBits::CAN_WRITE)
+    | impl::WfdePath::Bit(PermissionBits::CAN_CREATE_FILE)
+    | impl::WfdePath::Bit(PermissionBits::CAN_DELETE_FILE)
+    | impl::WfdePath::Bit(PermissionBits::CAN_RENAME)
+    | impl::WfdePath::Bit(PermissionBits::CAN_CREATE_DIR)
+    | impl::WfdePath::Bit(PermissionBits::CAN_DELETE_DIR)
+    | impl::WfdePath::Bit(PermissionBits::CAN_SET_TIMESTAMP)
+    | impl::WfdePath::Bit(PermissionBits::IS_RECURSIVE)
+    | impl::WfdePath::Bit(PermissionBits::CAN_SET_PERMISSIONS);
+}
+
+Path::permbits_t Path::GetDefaultPubUploadPermissions() noexcept
+{
+    return impl::WfdePath::Bit(PermissionBits::CAN_LIST)
+    | impl::WfdePath::Bit(PermissionBits::CAN_ENTER)
+    | impl::WfdePath::Bit(PermissionBits::IS_SHARED_UPLOAD_DIR);
+}
+
 Path::permbits_t Path::ToPermBits(const std::string& list)
 {
     Path::permbits_t rval = 0;

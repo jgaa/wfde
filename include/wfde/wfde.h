@@ -208,6 +208,15 @@ public:
     Path() = default;
     Path& operator = (const Path&) = delete;
     virtual ~Path() {};
+    
+    /*! Get the default permission bits for a users home directory.*/
+    static permbits_t GetDefaultHomePermissions() noexcept;
+    
+    /*! Get the default permission bits for a normal, read only directory.*/
+    static permbits_t GetDefaultPermissions() noexcept;
+    
+    /*! Get the default permission bits for a public upload directory.*/
+    static permbits_t GetDefaultPubUploadPermissions() noexcept;
 
     /*! Get the logic path, as observed from the Client */
     virtual const vpath_t& GetVirtualPath() const = 0;
