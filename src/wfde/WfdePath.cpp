@@ -12,6 +12,40 @@ using namespace std::string_literals;
 
 namespace war {
 namespace wfde {
+
+namespace {
+    static const initializer_list<pair<string, Path::PermissionBits>> perm_names = {
+        {"CAN_READ", Path::PermissionBits::CAN_READ},
+        {"CAN_WRITE", Path::PermissionBits::CAN_WRITE},
+        {"CAN_EXECUTE", Path::PermissionBits::CAN_EXECUTE},
+        {"CAN_ENTER", Path::PermissionBits::CAN_ENTER},
+        {"CAN_LIST", Path::PermissionBits::CAN_LIST},
+        {"CAN_CREATE_DIR", Path::PermissionBits::CAN_CREATE_DIR},
+        {"CAN_CREATE_FILE", Path::PermissionBits::CAN_CREATE_FILE},
+        {"CAN_DELETE_FILE", Path::PermissionBits::CAN_DELETE_FILE},
+        {"CAN_DELETE_DIR", Path::PermissionBits::CAN_DELETE_DIR},
+        {"CAN_SEE_HIDDEN_FILES", Path::PermissionBits::CAN_SEE_HIDDEN_FILES},
+        {"CAN_SEE_HIDDEN_DIRS", Path::PermissionBits::CAN_SEE_HIDDEN_DIRS},
+        {"CAN_CREATE_HIDDEN_FILES", Path::PermissionBits::CAN_CREATE_HIDDEN_FILES},
+        {"CAN_CREATE_HIDDEN_DIRS", Path::PermissionBits::CAN_CREATE_HIDDEN_DIRS},
+        {"CAN_SET_TIMESTAMP", Path::PermissionBits::CAN_SET_TIMESTAMP},
+        {"CAN_SET_PERMISSIONS", Path::PermissionBits::CAN_SET_PERMISSIONS},
+        {"CAN_RENAME", Path::PermissionBits::CAN_RENAME},
+        {"IS_RECURSIVE", Path::PermissionBits::IS_RECURSIVE},
+        {"IS_SHARED_UPLOAD_DIR", Path::PermissionBits::IS_SHARED_UPLOAD_DIR},
+    };
+    
+const char *pad(bool& virgin) {
+    if (virgin) {
+        virgin = false;
+        return "";
+    }
+    
+    return ", ";
+}
+} // anonymous namespace
+
+
 namespace impl {
 
 WfdePath::WfdePath(const Path::vpath_t& vpath,
@@ -152,28 +186,8 @@ vector< boost::string_ref > WfdePath::DoSplit(const string& partsToSplit,
 
 Path::permbits_t WfdePath::ToPermBit(const boost::string_ref& name)
 {
-    static const initializer_list<pair<string, PermissionBits>> perms = {
-        {"CAN_READ", PermissionBits::CAN_READ},
-        {"CAN_WRITE", PermissionBits::CAN_WRITE},
-        {"CAN_EXECUTE", PermissionBits::CAN_EXECUTE},
-        {"CAN_ENTER", PermissionBits::CAN_ENTER},
-        {"CAN_LIST", PermissionBits::CAN_LIST},
-        {"CAN_CREATE_DIR", PermissionBits::CAN_CREATE_DIR},
-        {"CAN_CREATE_FILE", PermissionBits::CAN_CREATE_FILE},
-        {"CAN_DELETE_FILE", PermissionBits::CAN_DELETE_FILE},
-        {"CAN_DELETE_DIR", PermissionBits::CAN_DELETE_DIR},
-        {"CAN_SEE_HIDDEN_FILES", PermissionBits::CAN_SEE_HIDDEN_FILES},
-        {"CAN_SEE_HIDDEN_DIRS", PermissionBits::CAN_SEE_HIDDEN_DIRS},
-        {"CAN_CREATE_HIDDEN_FILES", PermissionBits::CAN_CREATE_HIDDEN_FILES},
-        {"CAN_CREATE_HIDDEN_DIRS", PermissionBits::CAN_CREATE_HIDDEN_DIRS},
-        {"CAN_SET_TIMESTAMP", PermissionBits::CAN_SET_TIMESTAMP},
-        {"CAN_SET_PERMISSIONS", PermissionBits::CAN_SET_PERMISSIONS},
-        {"CAN_RENAME", PermissionBits::CAN_RENAME},
-        {"IS_RECURSIVE", PermissionBits::IS_RECURSIVE},
-        {"IS_SHARED_UPLOAD_DIR", PermissionBits::IS_SHARED_UPLOAD_DIR},
-    };
 
-    for(const auto& p : perms) {
+    for(const auto& p : perm_names) {
         if (name == p.first) {
             return Bit(p.second);
         }
@@ -237,6 +251,19 @@ Path::permbits_t Path::ToPermBits(const std::string& list)
     }
 
     return rval;
+}
+
+std::string Path::ToPermNames(const permbits_t perms) {
+    std::ostringstream val;
+    auto virgin = true;
+    
+    for(const auto& p : perm_names) {
+        if (perms & impl::WfdePath::Bit(p.second)) {
+            val << p.first << pad(virgin);
+        }
+    }
+    
+   return val.str();
 }
 
 vector<boost::string_ref> Path::Split(const Path::vpath_t& partsToSplit)

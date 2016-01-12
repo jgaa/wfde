@@ -295,6 +295,12 @@ public:
 
     /*! Convert a comma-sepaarated list of permission tokens to a numeric value */
     static permbits_t ToPermBits(const std::string& list);
+    
+    /*! Convert binary permissions to a comma separated list of permission namespace
+     * 
+     * This string is suitable to be passed to ToPermBits()
+     */
+    static std::string ToPermNames(permbits_t perms);
 
     /*! Return a deep copy of this path
      *
