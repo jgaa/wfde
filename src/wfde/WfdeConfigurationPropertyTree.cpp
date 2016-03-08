@@ -9,8 +9,8 @@ using namespace std;
 namespace war {
 namespace wfde {
 namespace impl {
-    
-    
+
+
 WfdeConfigurationPropertyTree::WfdeConfigurationPropertyTree(const string& path)
 : path_{path}
 {
@@ -32,7 +32,7 @@ string WfdeConfigurationPropertyTree::GetValue(const char* path, const char* def
 bool WfdeConfigurationPropertyTree::HaveValue(const char* path) const
 {
     WAR_ASSERT(path);
-    return data_.get_child_optional(ToPath(path)) != nullptr;
+    return data_.get_child_optional(ToPath(path)).is_initialized();
 }
 
 void WfdeConfigurationPropertyTree::SetValue(const char* path, string value)
@@ -80,7 +80,7 @@ Configuration::ptr_t Configuration::GetConfiguration(const std::string& path) {
 }
 
 Configuration::ptr_t Configuration::CreateInstance() {
-    
+
     return impl::WfdeConfigurationPropertyTree::CreateInstance();
 }
 
