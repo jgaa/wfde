@@ -26,7 +26,7 @@ add_executable(wfde_unit_tests ${SOURCES})
 target_link_libraries(wfde_unit_tests
     ${DEFAULT_LIBRARIES}
     wfde
-    ${BOOST_UNIT_TEST_FRAMEWORK})
+    ${BOOST_UNIT_TEST_LIBRARIES})
 
 add_test(WFDE_UNITTESTS wfde_unit_tests)
 

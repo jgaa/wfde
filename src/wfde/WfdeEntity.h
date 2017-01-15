@@ -27,14 +27,14 @@ public:
     }
 
     ~WfdeEntity() {}
-    
+
     Type GetType() const noexcept override { return type_; }
 
     std::string GetName() const override {
         WAR_ASSERT(!name_.empty());
         return name_;
     }
-    
+
     id_t GetId() const override { return id_; };
 
     parent_t *GetParent() const override {
@@ -50,7 +50,6 @@ public:
             WAR_THROW_T(ExceptionAlreadyExist,
                 "Parent can only be set once");
         }
-        WAR_POINTER_ASSERT(&parent, parent_t);
         parent_ = &dynamic_cast<parent_t &>(parent);
     }
 
@@ -128,7 +127,7 @@ protected:
         }
         return ret;
     }
-    
+
     static boost::uuids::uuid LoadId(const Configuration& conf) {
         const auto id = conf.GetValue("/Id", "");
         if (id.empty())
