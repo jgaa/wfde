@@ -1,12 +1,8 @@
 # Main project definition for wfde
 #
-# This project is currently being developed with Debian "testing", using the
+# This project is currently being developed with Debian "stretch", using the
 # latest clang++ and g++ compilers and libraries.
 #
-# Supported compilers:
-#  - Clang 3.5.1 [Tested with Debian jessie]
-#  - g++ 4.9     [Tested with Debian jessie]
-#  - Microsoft Visual Studio 2015 preview [Tested with Windiows 7]
 
 cmake_minimum_required(VERSION 3.0)
 project (wfde)
@@ -28,6 +24,9 @@ endif()
 if (NOT DEFINED WFDE_ROOT_DIR)
     set(WFDE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
+
+# Asio trigger deprecation warnings
+add_definitions(-DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
 
 if (NOT EMBEDDED_WFDELIB)
 
