@@ -6,7 +6,7 @@
 
 #include "WfdeProtocolFtp.h"
 #include "WfdeFtpSession.h"
-#include "log/WarLog.h"
+#include <warlib/WarLog.h>
 #include "wfde/ftp_protocol.h"
 #include "WfdeAsciiFile.h"
 #include "WfdeSocket.h"
@@ -16,7 +16,7 @@
 #include "boost/regex.hpp"
 #include <boost/algorithm/string.hpp>
 
-#include "war_helper.h"
+#include <warlib/helper.h>
 
 using namespace std;
 using namespace std::string_literals;

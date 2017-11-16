@@ -7,9 +7,9 @@
 
 #include <boost/filesystem.hpp>
 
-#include "wfde/wfde.h"
-#include "war_error_handling.h"
-#include "log/WarLog.h"
+#include <wfde/wfde.h>
+#include <warlib/error_handling.h>
+#include <warlib/WarLog.h>
 
 // TODO: Decouple
 #include "ftp_protocol.h"

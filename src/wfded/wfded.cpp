@@ -3,7 +3,7 @@
 #include <boost/program_options.hpp>
 
 #include <log/WarLog.h>
-#include "war_error_handling.h"
+#include <warlib/error_handling.h>
 
 #ifdef WIN32
 #   include "win/minidump.h"

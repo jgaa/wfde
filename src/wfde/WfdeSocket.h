@@ -1,9 +1,9 @@
 #pragma once
 
-#include "wfde/wfde.h"
-#include "tasks/WarPipeline.h"
-#include "war_uuid.h"
-#include "log/WarLog.h"
+#include <wfde/wfde.h>
+#include <warlib/WarPipeline.h>
+#include <warlib/uuid.h>
+#include <warlib/WarLog.h>
 
 namespace war {
 namespace wfde {

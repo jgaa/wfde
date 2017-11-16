@@ -1,6 +1,6 @@
 #pragma once
 
-#include "war_config.h"
+#include <warlib/config.h>
 #include "WfdeFile.h"
 
 namespace war {

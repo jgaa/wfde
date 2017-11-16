@@ -1,5 +1,5 @@
 #include "war_tests.h"
-#include "wfde/wfde.h"
+#include <wfde/wfde.h>
 #include "../src/wfde/ftp/WfdeFtpSession.h"
 
 #include <boost/test/unit_test.hpp>

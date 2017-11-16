@@ -1,10 +1,10 @@
 #include "war_wfde.h"
 #include "WfdeServer.h"
 #include "WfdeProtocol.h"
-#include "tasks/WarThreadpool.h"
-#include "log/WarLog.h"
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
 
-#include "war_helper.h"
+#include <warlib/helper.h>
 
 using namespace std;
 

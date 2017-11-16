@@ -2,8 +2,8 @@
 
 #include <boost/regex.hpp> // g++ don't properly support C++11 regex yet
 //#include "../war_tests.h"
-#include "wfde/wfde.h"
-#include "log/WarLog.h"
+#include <wfde/wfde.h>
+#include <warlib/WarLog.h>
 
 namespace war {
 namespace wfde {

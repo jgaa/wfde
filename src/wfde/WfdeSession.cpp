@@ -1,8 +1,8 @@
 #include "war_wfde.h"
 
-#include "tasks/WarThreadpool.h"
-#include "log/WarLog.h"
-#include "war_uuid.h"
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
 
 #include "WfdeClient.h"
 #include "WfdeSession.h"

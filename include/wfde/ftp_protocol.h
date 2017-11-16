@@ -9,7 +9,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "war_error_handling.h"
+#include <warlib/error_handling.h>
 
 namespace war {
 namespace wfde {

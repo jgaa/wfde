@@ -2,7 +2,7 @@
 #include "WfdeProtocolFtp.h"
 #include "WfdeFtpSession.h"
 
-#include "war_helper.h"
+#include <warlib/helper.h>
 
 using namespace std;
 

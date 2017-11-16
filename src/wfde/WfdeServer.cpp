@@ -1,8 +1,8 @@
 
 #include <regex>
 #include "war_wfde.h"
-#include "war_transaction.h"
-#include "war_helper.h"
+#include <warlib/transaction.h>
+#include <warlib/helper.h>
 #include "WfdeServer.h"
 
 using namespace std;

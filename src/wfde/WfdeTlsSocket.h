@@ -1,15 +1,15 @@
 #pragma once
 
-#include "wfde/wfde_config.h"
+#include <wfde/config.h>
 #ifdef WFDE_WITH_TLS
 
 #include <boost/asio/ssl.hpp>
 
-#include "wfde/wfde.h"
+#include <wfde/wfde.h>
 
-#include "tasks/WarPipeline.h"
-#include "war_uuid.h"
-#include "log/WarLog.h"
+#include <warlib/WarPipeline.h>
+#include <warlib/uuid.h>
+#include <warlib/WarLog.h>
 
 /* At this point boost::asio does not allow us to upgrade
  * from plain TCP to SSL by constructing an ssl stream over an

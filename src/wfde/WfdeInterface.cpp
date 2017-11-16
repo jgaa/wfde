@@ -2,12 +2,12 @@
 
 #include <boost/asio/spawn.hpp>
 
-#include "tasks/WarThreadpool.h"
+#include <warlib/WarThreadpool.h>
 #include "WfdeServer.h"
 #include "WfdeInterface.h"
 #include "WfdeTlsSocket.h"
 #include "WfdeSocket.h"
-#include "log/WarLog.h"
+#include <warlib/WarLog.h>
 
 using namespace std;
 

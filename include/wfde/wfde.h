@@ -7,10 +7,10 @@
 #include <boost/filesystem.hpp>
 #include <boost/utility/string_ref_fwd.hpp>
 
-#include <wfde/wfde_config.h>
-#include <war_basics.h>
-#include <war_error_handling.h>
-#include <war_asio.h>
+#include <wfde/config.h>
+#include <warlib/basics.h>
+#include <warlib/error_handling.h>
+#include <warlib/asio.h>
 
 #ifndef WFDE_DEFAULT_HOST_LONG_NAME
 #   define WFDE_DEFAULT_HOST_LONG_NAME "Jgaa's Fan Club FTP Server"
@@ -96,7 +96,7 @@ public:
      */
     virtual std::string GetValue(const char* path,
         const char *defaultVal = nullptr) const = 0;
-       
+
     /*! Check if we have a value
      *
      * \param path something like
@@ -136,9 +136,9 @@ public:
      * \param confFile Configuration file that contains the configuration.
      */
     static ptr_t GetConfiguration(const std::string& confFile);
-    
+
     /*! Create an empty instance of a Configuration object
-     * 
+     *
      * Many objects takes a configuration as argument. This
      * factory may be used to create such instances where the
      * data is not provided by a configuration file.
@@ -208,13 +208,13 @@ public:
     Path() = default;
     Path& operator = (const Path&) = delete;
     virtual ~Path() {};
-    
+
     /*! Get the default permission bits for a users home directory.*/
     static permbits_t GetDefaultHomePermissions() noexcept;
-    
+
     /*! Get the default permission bits for a normal, read only directory.*/
     static permbits_t GetDefaultPermissions() noexcept;
-    
+
     /*! Get the default permission bits for a public upload directory.*/
     static permbits_t GetDefaultPubUploadPermissions() noexcept;
 
@@ -295,9 +295,9 @@ public:
 
     /*! Convert a comma-sepaarated list of permission tokens to a numeric value */
     static permbits_t ToPermBits(const std::string& list);
-    
+
     /*! Convert binary permissions to a comma separated list of permission namespace
-     * 
+     *
      * This string is suitable to be passed to ToPermBits()
      */
     static std::string ToPermNames(permbits_t perms);
@@ -436,7 +436,7 @@ public:
     using ptr_t = std::shared_ptr<Entity>;
     using children_t = std::vector<Entity::ptr_t>;
     using id_t = boost::uuids::uuid;
-    
+
     enum Type {
         SERVER,
         HOST,
@@ -449,16 +449,16 @@ public:
     Entity& operator = (const Entity&) = delete;
 
     virtual ~Entity() = default;
-    
+
     virtual Type GetType() const noexcept = 0;
 
     /*! Return the unique name, in the context of the parent entity */
     virtual std::string GetName() const = 0;
-        
-    /*! Get the unique ID for this object 
+
+    /*! Get the unique ID for this object
      *
      * The ID is assigned when the object is created. If the object is loaded
-     * from persistent storage, the ID is likely to be the database id for 
+     * from persistent storage, the ID is likely to be the database id for
      * this object.
      */
     virtual id_t GetId() const = 0;
@@ -647,18 +647,18 @@ public:
      * \todo Add IPv6 support for the FTP protocol.
      */
     virtual unsigned AddInterfaces() = 0;
-    
+
     /*! Add interface
-     * 
+     *
      * Adds interface(s) defined in the Configuration.
-     * 
+     *
      * @param conf Configuration for the interface.
      *      /Name be unique within the context of a protocol.
      *          If unset (empty string), a name will be constructed
      *          from the IP address and the port.
      *      /Ip IP address or hostname for the interface.
      *      /Port Port name or number (for example 'ftp' or '21')
-     * 
+     *
      * @return Returns the number of interfaces that were added.
      */
     virtual unsigned AddInterface(const Configuration::ptr_t& conf) = 0;
@@ -1184,7 +1184,7 @@ public:
      */
     virtual Client::ptr_t Login(const std::string& name,
                                 const std::string& pwd) = 0;
-                                
+
     /*! Notify the auth-manager that it is assigned to this host
      */
     virtual void Join(Host::ptr_t host) = 0;
@@ -1238,7 +1238,7 @@ Protocol::ptr_t CreateProtocol(Host *parent, const Configuration::ptr_t conf);
 /*! Fabric to create an Interface
  *
  * \param parent who owns this interface
- * 
+ *
  * \param name Must be unique within the context of a protocol.
  *      If unset (empty string), a name will be constructed
  *      from the IP address and the port.

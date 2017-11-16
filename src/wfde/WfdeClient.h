@@ -1,8 +1,8 @@
 #pragma once
 
 #include <atomic>
-#include "wfde/wfde.h"
-#include "tasks/WarPipeline.h"
+#include <wfde/wfde.h>
+#include <warlib/WarPipeline.h>
 
 namespace war {
 namespace wfde {

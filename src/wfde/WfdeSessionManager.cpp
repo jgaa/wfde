@@ -2,10 +2,10 @@
 
 #include <string>
 
-#include "tasks/WarThreadpool.h"
-#include "log/WarLog.h"
-#include "war_uuid.h"
-#include "war_helper.h"
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
+#include <warlib/helper.h>
 
 #include "WfdeClient.h"
 #include "WfdeSessionManager.h"

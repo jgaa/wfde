@@ -2,8 +2,8 @@
 #include "WfdePermissions.h"
 #include "WfdePath.h"
 
-#include "log/WarLog.h"
-#include "war_error_handling.h"
+#include <warlib/WarLog.h>
+#include <warlib/error_handling.h>
 
 using namespace std;
 using namespace std::string_literals;

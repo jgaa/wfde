@@ -8,10 +8,10 @@
 
 #include <boost/functional/hash.hpp>
 
-#include "wfde/wfde.h"
-#include "tasks/WarPipeline.h"
-#include "log/WarLog.h"
-#include "war_uuid.h"
+#include <wfde/wfde.h>
+#include <warlib/WarPipeline.h>
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
 
 namespace war {
 namespace wfde {

@@ -3,9 +3,9 @@
 #include <algorithm>
 
 #include "WfdePath.h"
-#include "log/WarLog.h"
+#include <warlib/WarLog.h>
 #include "wfde/ftp_protocol.h"
-#include "war_error_handling.h"
+#include <warlib/error_handling.h>
 
 using namespace std;
 using namespace std::string_literals;

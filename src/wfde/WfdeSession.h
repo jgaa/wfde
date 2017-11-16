@@ -7,8 +7,8 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/asio/ssl.hpp>
 
-#include "wfde/wfde.h"
-#include "tasks/WarPipeline.h"
+#include <wfde/wfde.h>
+#include <warlib/WarPipeline.h>
 
 namespace war {
 namespace wfde {

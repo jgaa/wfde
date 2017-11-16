@@ -7,11 +7,11 @@
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "log/WarLog.h"
+#include <warlib/WarLog.h>
 #include "wfde/ftp_protocol.h"
-#include "war_uuid.h"
-#include "war_helper.h"
-#include "tasks/WarPipeline.h"
+#include <warlib/uuid.h>
+#include <warlib/helper.h>
+#include <warlib/WarPipeline.h>
 
 #include "WfdeFtpList.h"
 

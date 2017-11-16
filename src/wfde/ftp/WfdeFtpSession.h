@@ -9,11 +9,11 @@
 
 #include <boost/asio/spawn.hpp>
 
-#include "wfde/wfde.h"
+#include <wfde/wfde.h>
 #include "wfde/ftp_protocol.h"
-#include "tasks/WarPipeline.h"
-#include "log/WarLog.h"
-#include "war_uuid.h"
+#include <warlib/WarPipeline.h>
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
 
 
 using namespace std;

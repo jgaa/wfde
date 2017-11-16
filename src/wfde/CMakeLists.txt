@@ -1,5 +1,5 @@
+project(wfde VERSION 3.0 LANGUAGES CXX)
 
-project(wfde)
 set(ACTUAL_SOURCES
     WfdeConfigurationPropertyTree.cpp
     WfdePermissions.cpp
@@ -37,27 +37,33 @@ set(HEADERS
     WfdeFile.h
     WfdeAsciiFile.h
     ${WFDE_ROOT_DIR}/include/wfde/wfde.h
-	${WFDE_ROOT_DIR}/include/wfde/win/FileListIterator.h
-	${WARLIB_ROOT_DIR}/include/tasks/WarThreadpool.h
-	${WARLIB_ROOT_DIR}/include/war_asio.h
-	)
+    ${WFDE_ROOT_DIR}/include/wfde/win/FileListIterator.h
+    ${WARLIB_ROOT_DIR}/include/tasks/WarThreadpool.h
+    ${WARLIB_ROOT_DIR}/include/war_asio.h
+    )
 
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(target_include_directories(warcore
+    PUBLIC $<BUILD_INTERFACE:${WFDE_ROOT}/include> $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_BINARY_DIR}/generated-include/
+    PRIVATE ${WFDE_ROOT}/src/wfde )
+)
 
 if (WIN32)
- 	ADD_MSVC_PRECOMPILED_HEADER(war_wfde.h pch.cpp ACTUAL_SOURCES)
-	add_definitions(-DWFDE_PCH)
-	set(SOURCES ${ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
+    set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
-	set(SOURCES ${ACTUAL_SOURCES})
-	set(PTHERAD ptherad)
+    set(SOURCES ${ACTUAL_SOURCES})
 endif()
 
 add_library(wfde ${SOURCES})
-set_target_properties(wfde PROPERTIES DEBUG_OUTPUT_NAME wfdeD)
-target_link_libraries(wfde ${BOOST_LIBRARIES}
-  debug war_logD optimized war_log
-  debug war_tasksD optimized war_tasks
-  ${PTHREAD}
-  )
+add_dependencies(wfde externalWarlib)
+set_property(TARGET wfde PROPERTY CXX_STANDARD 14)
+target_link_libraries(wfde PUBLIC ${Boost_LIBRARIES} warcore)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
+
+install(TARGETS wfde EXPORT wfde-targets
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+
+install(DIRECTORY ${WFDE_ROOT}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

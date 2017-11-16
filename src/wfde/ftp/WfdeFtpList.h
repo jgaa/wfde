@@ -5,13 +5,13 @@
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 
-#include "wfde/wfde.h"
-#include "wfde/file_listing.h"
-#include "war_error_handling.h"
-#include "war_uuid.h"
-#include "log/WarLog.h"
-#include "wfde/ftp_protocol.h"
-#include "war_impl.h"
+#include <wfde/wfde.h>
+#include <wfde/file_listing.h>
+#include <warlib/error_handling.h>
+#include <warlib/uuid.h>
+#include <warlib/WarLog.h>
+#include <wfde/ftp_protocol.h>
+#include <warlib/impl.h>
 
 /* I don't like using namespaces in header-files, but this makes sense
  * as this header-file is actually an implementation detail used by

@@ -1,6 +1,6 @@
 
 #include "war_tests.h"
-#include "wfde/wfde.h"
+#include <wfde/wfde.h>
 #include "../src/wfde/WfdePermissions.h"
 #include "../src/wfde/WfdePath.h"
 

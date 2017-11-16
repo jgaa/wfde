@@ -3,8 +3,8 @@
 
 #include <boost/uuid/uuid_io.hpp>
 
-#include "tasks/WarThreadpool.h"
-#include "log/WarLog.h"
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
 
 #include "WfdeClient.h"
 #include "WfdeSession.h"

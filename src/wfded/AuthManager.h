@@ -10,11 +10,11 @@
 #include <atomic>
 #include <boost/algorithm/string/case_conv.hpp>
 
-#include "wfde/wfde.h"
+#include <wfde/wfde.h>
 #include <war_impl.h>
 #include <war_error_handling.h>
-#include "log/WarLog.h"
-#include "war_uuid.h"
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
 
 namespace war {
 namespace wfde {

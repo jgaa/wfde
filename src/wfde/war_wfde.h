@@ -1,7 +1,7 @@
 #pragma once
 
 // Convenicene and precompiled header
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #   include "win/war_msvc_pragmas.h"
 #endif
 
@@ -9,7 +9,7 @@
 #include <vector>
 #include <set>
 
-#include "war_basics.h"
-#include "log/WarLog.h"
-#include "wfde/wfde.h"
+#include <warlib/basics.h>
+#include <warlib/WarLog.h>
+#include <wfde/wfde.h>
 

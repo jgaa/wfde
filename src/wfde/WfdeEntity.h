@@ -3,9 +3,9 @@
 #include <thread>
 #include <regex>
 #include <type_traits>
-#include "wfde/wfde.h"
-#include "log/WarLog.h"
-#include "war_uuid.h"
+#include <wfde/wfde.h>
+#include <warlib/WarLog.h>
+#include <warlib/uuid.h>
 
 namespace war {
 namespace wfde {

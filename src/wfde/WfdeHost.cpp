@@ -1,7 +1,7 @@
 #include "war_wfde.h"
 #include "WfdeServer.h"
 #include "WfdeHost.h"
-#include "log/WarLog.h"
+#include <warlib/WarLog.h>
 
 using namespace std;
 
