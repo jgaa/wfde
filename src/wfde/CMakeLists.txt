@@ -19,7 +19,8 @@ set(ACTUAL_SOURCES
     WfdeHost.cpp
     WfdeServer.cpp
     wfde.cpp
-	)
+    )
+
 set(HEADERS
     war_wfde.h
     WfdeConfigurationPropertyTree.h
@@ -42,12 +43,6 @@ set(HEADERS
     ${WARLIB_ROOT_DIR}/include/war_asio.h
     )
 
-include_directories(target_include_directories(warcore
-    PUBLIC $<BUILD_INTERFACE:${WFDE_ROOT}/include> $<INSTALL_INTERFACE:include>
-    PRIVATE ${CMAKE_BINARY_DIR}/generated-include/
-    PRIVATE ${WFDE_ROOT}/src/wfde )
-)
-
 if (WIN32)
     set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
@@ -57,7 +52,14 @@ endif()
 add_library(wfde ${SOURCES})
 add_dependencies(wfde externalWarlib)
 set_property(TARGET wfde PROPERTY CXX_STANDARD 14)
-target_link_libraries(wfde PUBLIC ${Boost_LIBRARIES} warcore)
+target_include_directories(wfde
+    PUBLIC $<BUILD_INTERFACE:${WFDE_ROOT}/include> $<INSTALL_INTERFACE:include>
+    PRIVATE ${CMAKE_BINARY_DIR}/generated-include/
+    PRIVATE ${WFDE_ROOT}/src/wfde
+)
+target_link_libraries(wfde
+    PUBLIC ${Boost_LIBRARIES} warcore
+    PRIVATE ${OPENSSL_LIBRARIES})
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
 

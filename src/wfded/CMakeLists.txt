@@ -1,4 +1,4 @@
-project(simpleftpd)
+project(wfded VERSION 3.0 LANGUAGES CXX)
 
 set(FTPD_ACTUAL_SOURCES
     wfded.cpp
@@ -9,14 +9,23 @@ set(HEADERS
     )
 
 if (WIN32)
-    ADD_MSVC_PRECOMPILED_HEADER(wfded.h pch.cpp FTPD_ACTUAL_SOURCES)
-    add_definitions(-DWAR_PCH)
-    set(FTPD_SOURCES ${FTPD_ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
+    set(FTPD_SOURCES ${FTPD_ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
     set(FTPD_SOURCES ${FTPD_ACTUAL_SOURCES})
 endif()
 
 add_executable(wfded ${FTPD_SOURCES})
-set_target_properties(wfded PROPERTIES DEBUG_OUTPUT_NAME wfdedD)
-target_link_libraries(wfded ${DEFAULT_LIBRARIES} wfde)
+set_property(TARGET wfded PROPERTY CXX_STANDARD 14)
+target_link_libraries(wfded PRIVATE ${Boost_LIBRARIES} wfde)
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
+target_compile_definitions(${PROJECT_NAME} PRIVATE -DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
 
+target_include_directories(wfded
+    PRIVATE ${WFDE_ROOT}/include>
+    PRIVATE ${CMAKE_BINARY_DIR}/generated-include/
+    PRIVATE ${WFDE_ROOT}/src/wfded
+)
+
+install(TARGETS wfded EXPORT wfde-targets
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )

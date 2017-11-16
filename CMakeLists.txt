@@ -28,12 +28,16 @@ find_package(Boost 1.50 REQUIRED COMPONENTS
     context
     coroutine
     chrono
+    regex
     )
 add_library(boost INTERFACE IMPORTED)
 set_property(TARGET boost PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
 
+find_package(OpenSSL REQUIRED)
+
 add_subdirectory(src/wfde)
+add_subdirectory(src/wfded)
 
 CONFIGURE_FILE(config.h.template ${CMAKE_BINARY_DIR}/generated-include/wfde/config.h)
 

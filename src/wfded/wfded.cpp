@@ -2,13 +2,13 @@
 
 #include <boost/program_options.hpp>
 
-#include <log/WarLog.h>
+#include <warlib/WarLog.h>
 #include <warlib/error_handling.h>
 
 #ifdef WIN32
-#   include "win/minidump.h"
+#   include <warlib/win/minidump.h>
 #endif
-#include <tasks/WarThreadpool.h>
+#include <warlib/WarThreadpool.h>
 
 #include "AuthManager.h"
 
@@ -88,7 +88,7 @@ bool ParseCommandLine(int argc, char *argv[], log::LogEngine& logger,
 
     if (
 #ifndef WIN32
-        !conf.daemon && 
+        !conf.daemon &&
 #endif
         vm.count("console-log")
     ) {
@@ -191,8 +191,8 @@ int main(int argc, char *argv[])
     LOG_INFO << "wfded " << wfde::Version() << " starting up";
 
     try {
-        /* 
-         * Create a configuration 
+        /*
+         * Create a configuration
          */
         Configuration::ptr_t conf = war::wfde::Configuration::GetConfiguration(
             options.conf_file);
