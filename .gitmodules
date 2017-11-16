@@ -1,4 +1,0 @@
-[submodule "externals/warlib"]
-	path = externals/warlib
-	url = https://github.com/jgaa/warlib.git
-
