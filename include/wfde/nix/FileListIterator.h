@@ -157,10 +157,10 @@ private:
             return;
         }
 
-        const struct dirent *dirent = nullptr;
+        struct dirent *dirent = nullptr;
         if (!is_eof_) {
             errno = 0;
-            const auto *dirent = readdir(dir_);
+            dirent = readdir(dir_);
             if (UNLIKELY(dirent == nullptr)) {
                 const auto errval = errno;
                 if (errval) {

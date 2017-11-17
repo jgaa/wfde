@@ -502,7 +502,7 @@ void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)
     }
 
 #ifdef WFDE_WITH_TLS
-    auto sck = make_shared<tls_tcp_socket_t>(GetPipeline());
+    auto sck = make_shared<tls_tcp_socket_t>(GetPipeline(), socket_ptr_->GetCertPath());
 #else
     auto sck = make_shared<tcp_socket_t>(GetPipeline());
 #endif

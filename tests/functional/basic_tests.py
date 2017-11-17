@@ -14,6 +14,7 @@ from test_file import File
 from test_file import md5sum
 from test_file import md5sumAscii
 import test_file
+import subprocess
 
 config = {};
 config['host'] = "127.0.0.1"
@@ -22,6 +23,9 @@ config['debug-level'] = 0
 config['ftp-root'] = os.getcwd() + '/test-tmp/ftproot'
 config['workdir'] = os.getcwd() + '/test-tmp/client'
 config['server-config'] =  os.getcwd() + '/test-tmp/wfded.conf'
+
+# Assumes we run the command from the root of the wfde directory
+config['server-cert'] = os.getcwd() + '/src/wfded/conf/server.pem'
 
 # Set to false under Windows for now
 config['test-tls'] = True
@@ -976,6 +980,10 @@ class FtpTest:
 
 
 if __name__ == '__main__':
+
+    if not os.path.isfile(config['server-cert']):
+        raise Exception('Missing tls pem file: ' + config['server-cert'])
+
 
     # Run tests
     testcase = FtpTest(config)

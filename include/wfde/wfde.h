@@ -718,6 +718,9 @@ public:
     virtual boost::asio::ip::tcp::endpoint GetRemoteEndpoint() = 0;
 
     virtual void UpgradeToTls(boost::asio::yield_context& yield) = 0;
+
+    // Get the path to the TLS certificate (if it has one).
+    virtual boost::filesystem::path GetCertPath() = 0;
 };
 
 /*! Interface to a protocol

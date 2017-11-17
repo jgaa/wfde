@@ -3,6 +3,11 @@ project (wfde_project VERSION 1.0 LANGUAGES CXX)
 
 set (WFDE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
+if (NOT DEFINED WFDE_WITH_TLS)
+    option(WFDE_WITH_TLS "Enable TLS" ON)
+endif()
+
+
 if (NOT DEFINED WITH_APIDOC)
     option(WITH_APIDOC "Generate Doxygen documentation")
 endif()
@@ -35,7 +40,9 @@ set_property(TARGET boost PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
     )
 
-find_package(OpenSSL REQUIRED)
+if (WFDE_WITH_TLS)
+    find_package(OpenSSL REQUIRED)
+endif()
 
 add_subdirectory(src/wfde)
 add_subdirectory(src/wfded)

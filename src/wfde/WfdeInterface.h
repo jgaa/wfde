@@ -37,6 +37,7 @@ protected:
     std::unique_ptr<boost::asio::ip::tcp::acceptor> acceptor_;
     handler_t on_connected_;
     Pipeline *pipeline_{nullptr};
+    boost::filesystem::path tls_cert_;
 };
 
 } // namespace impl

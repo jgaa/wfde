@@ -39,6 +39,7 @@ WfdeInterface::WfdeInterface(Protocol *parent,
                              const boost::asio::ip::tcp::endpoint& endpoint,
                              Configuration::ptr_t& conf)
 : WfdeEntity(parent, conf, Type::INTERFACE), endpoint_{endpoint}
+, tls_cert_{conf->GetValue("TlsCert", "server.pem")}
 {
     LOG_DEBUG_FN << "Created interface: " << log::Esc(name_);
 }
@@ -97,7 +98,7 @@ void WfdeInterface::Accept(boost::asio::yield_context yield)
 
         auto& some_pipeline = threadpool.GetAnyPipeline();
 #ifdef WFDE_WITH_TLS
-        auto socket = make_shared<tls_tcp_socket_t>(some_pipeline);
+        auto socket = make_shared<tls_tcp_socket_t>(some_pipeline, tls_cert_);
 #else
         auto socket = make_shared<tcp_socket_t>(some_pipeline);
 #endif

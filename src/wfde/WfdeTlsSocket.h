@@ -33,9 +33,9 @@ public:
     using socket_t = SocketT;
     using ssl_socket_t = boost::asio::ssl::stream<socket_t>;
 
-    WfdeTlsSocket(Pipeline& pipeline)
+    WfdeTlsSocket(Pipeline& pipeline, const boost::filesystem::path& certPath)
     : id_{get_uuid_as_string()}
-    , pipeline_{ pipeline }
+    , pipeline_{ pipeline }, cert_path_{certPath}
     {
         InitSocket();
     }
@@ -174,13 +174,17 @@ public:
         using_tls_ = true;
     }
 
+    boost::filesystem::path GetCertPath() {
+        return cert_path_;
+    }
+
 private:
     void InitSocket() {
         tls_context_.set_options(boost::asio::ssl::context::default_workarounds
             | boost::asio::ssl::context::no_sslv2
             | boost::asio::ssl::context::single_dh_use);
-        tls_context_.use_certificate_chain_file("server.pem");
-        tls_context_.use_private_key_file("server.pem",
+        tls_context_.use_certificate_chain_file(cert_path_.c_str());
+        tls_context_.use_private_key_file(cert_path_.c_str(),
                                           boost::asio::ssl::context::pem);
         //tls_context_.use_tmp_dh_file("dh512.pem");
 
@@ -193,6 +197,7 @@ private:
     bool using_tls_ = false;
     boost::asio::ssl::context tls_context_{ boost::asio::ssl::context::sslv23_server };
     std::unique_ptr<ssl_socket_t> ssl_socket_;
+    const boost::filesystem::path cert_path_;
 };
 
 } // namespace impl

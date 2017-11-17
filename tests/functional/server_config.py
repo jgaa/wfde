@@ -1,5 +1,5 @@
 
-	
+
 # Create wfded's configuration-data and write it to disk
 def CreateServerConfig(config):
     template = '''
@@ -13,8 +13,9 @@ Server {
                     Interfaces {
                         tcp-local {
                             Name tcp-local
-                            Ip "$IP$"
-                            Port "$PORT$"
+                            Ip "{{IP}}"
+                            Port "{{PORT}}"
+                            TlsCert "{{CERT}}"
                         }
                     }
                 }
@@ -22,7 +23,7 @@ Server {
             Paths {
                 root {
                     Name "/"
-                    Path "$FTPROOT$"
+                    Path "{{FTPROOT}}"
                     Perms "CAN_READ,CAN_LIST,CAN_ENTER,IS_RECURSIVE"
                 }
                 bin {
@@ -32,12 +33,12 @@ Server {
                 }
                 home {
                     Name home
-                    Path "$FTPROOT$/home"
+                    Path "{{FTPROOT}}/home"
                     Perms "IS_RECURSIVE"
                 }
                 upload {
                     Name upload
-                    Path "$FTPROOT$/upload"
+                    Path "{{FTPROOT}}/upload"
                     Perms "IS_RECURSIVE,CAN_LIST,CAN_ENTER,CAN_READ,CAN_WRITE,CAN_CREATE_FILE,CAN_DELETE_FILE,CAN_CREATE_DIR,CAN_DELETE_DIR,CAN_RENAME"
                 }
             }
@@ -58,7 +59,7 @@ Server {
                     Paths {
                         home {
                             Name "home"
-                            Path "$FTPROOT$/home/jgaa"
+                            Path "{{FTPROOT}}/home/jgaa"
                             Perms "IS_RECURSIVE,CAN_LIST,CAN_ENTER,CAN_READ,CAN_WRITE,CAN_CREATE_FILE,CAN_DELETE_FILE,CAN_CREATE_DIR,CAN_DELETE_DIR,CAN_RENAME"
                         }
                     }
@@ -69,7 +70,7 @@ Server {
 }
 '''
 
-    conf_data = template.replace('$IP$', config['host']).replace('$PORT$', str(config['port'])).replace('$FTPROOT$', config['ftp-root'].replace('\\','/'))
+    conf_data = template.replace('{{IP}}', config['host']).replace('{{PORT}}', str(config['port'])).replace('{{FTPROOT}}', config['ftp-root'].replace('\\','/')).replace('{{CERT}}', config['server-cert'])
     f = open(config['server-config'], 'w');
     f.write(conf_data)
     f.close()

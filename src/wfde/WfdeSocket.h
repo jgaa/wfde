@@ -119,6 +119,10 @@ public:
         WAR_THROW_T(ExceptionNotImplemented, "Not implemented");
     }
 
+    boost::filesystem::path GetCertPath() {
+        return {};
+    }
+
 protected:
     socket_t socket_;
     const std::string id_;
