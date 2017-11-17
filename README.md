@@ -19,8 +19,6 @@ to use the library.
 
 This is Work in progress.
 
-2017-10-19: The build of this project as a stand-alone library is currently broken.
-
 
 ## Functional Testing:
 --------------------------
