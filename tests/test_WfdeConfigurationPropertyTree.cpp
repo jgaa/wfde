@@ -2,17 +2,14 @@
 #include <wfde/wfde.h>
 #include "../src/wfde/WfdeConfigurationPropertyTree.h"
 
-#include <boost/test/unit_test.hpp>
-
 using namespace std;
 using namespace war;
 using namespace war::wfde;
 using namespace war::wfde::impl;
 
-BOOST_AUTO_TEST_SUITE(Wfde_Unit_Tests)
+const lest::test specification[] = {
 
-BOOST_AUTO_TEST_CASE(Test_WfdeConfigurationPropertyTree)
-{
+STARTCASE(Test_WfdeConfigurationPropertyTree) {
 
     const auto df_name = "Test_WfdeConfigurationPropertyTree.data001";
     static const auto testdata =
@@ -37,22 +34,30 @@ BOOST_AUTO_TEST_CASE(Test_WfdeConfigurationPropertyTree)
     }
 
     auto conf = WfdeConfigurationPropertyTree::CreateInstance(df_name);
-    BOOST_CHECK(conf->EnumNodes("/").size() == 4);
-    BOOST_CHECK(conf->EnumNodes("/key2").size() == 3);
-    BOOST_CHECK(conf->EnumNodes("/key2").at(1).name == "key2b");
-    BOOST_CHECK(conf->EnumNodes("/key2").at(0).name == "key2a");
-    BOOST_CHECK(conf->EnumNodes("/key2/key2b").size() == 2);
-    BOOST_CHECK(conf->GetValue("/key3", "") == "yellow");
-    BOOST_CHECK(conf->GetValue("key3", "") == "yellow");
-    BOOST_CHECK(conf->GetValue("/key3", "blue") == "yellow");
-    BOOST_CHECK(conf->GetValue("/nokey", "blue") == "blue");
-    BOOST_CHECK(conf->GetValue("/key2/key2b/key2b_1/key2b_1_1") == "blue");
+    EXPECT(conf->EnumNodes("/").size() == 4);
+    EXPECT(conf->EnumNodes("/key2").size() == 3);
+    EXPECT(conf->EnumNodes("/key2").at(1).name == "key2b");
+    EXPECT(conf->EnumNodes("/key2").at(0).name == "key2a");
+    EXPECT(conf->EnumNodes("/key2/key2b").size() == 2);
+    EXPECT(conf->GetValue("/key3", "") == "yellow");
+    EXPECT(conf->GetValue("key3", "") == "yellow");
+    EXPECT(conf->GetValue("/key3", "blue") == "yellow");
+    EXPECT(conf->GetValue("/nokey", "blue") == "blue");
+    EXPECT(conf->GetValue("/key2/key2b/key2b_1/key2b_1_1") == "blue");
 
     auto subnode = conf->GetConfigForPath("/key2");
-    BOOST_CHECK(subnode->EnumNodes("/key2b").size() == 2);
-    BOOST_CHECK(subnode->EnumNodes("key2b").size() == 2);
-    BOOST_CHECK(subnode->EnumNodes("/key2b").at(0).name == "key2b_1");
-    BOOST_CHECK(subnode->EnumNodes("key2b").at(0).name == "key2b_1");
-}
+    EXPECT(subnode->EnumNodes("/key2b").size() == 2);
+    EXPECT(subnode->EnumNodes("key2b").size() == 2);
+    EXPECT(subnode->EnumNodes("/key2b").at(0).name == "key2b_1");
+    EXPECT(subnode->EnumNodes("key2b").at(0).name == "key2b_1");
+} ENDCASE
+}; //lest
 
-BOOST_AUTO_TEST_SUITE_END()
+int main( int argc, char * argv[] )
+{
+    log::LogEngine log;
+    log.AddHandler(log::LogToFile::Create("Test_ServerObject.log", true, "file",
+        log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
+
+    return lest::run( specification, argc, argv );
+}

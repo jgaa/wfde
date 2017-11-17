@@ -26,6 +26,15 @@ std::ostream& operator << (std::ostream& o,
     return o << "{ FTP Session " << ses.GetId() << " }";
 }
 
+std::ostream& operator << (std::ostream& o,
+                           const war::wfde::impl::WfdeFtpSession *ses) {
+    if (ses) {
+        return o << "{ FTP Session " << ses->GetId() << " }";
+    }
+
+    return o << "{ FTP Session " << "NONE" << " }";
+}
+
 namespace war {
 namespace wfde {
 namespace impl {
@@ -63,7 +72,7 @@ boost::string_ref WfdeFtpSessionInput::FetchNextCommand()
                 WAR_THROW_T(NoInputException, "No input");
             } else {
                 LOG_TRACE2_FN << "Read " << bytes_read
-                    << " bytes from socket in " << *ftp_ses_;
+                    << " bytes from socket in " << ftp_ses_;
             }
         }
 

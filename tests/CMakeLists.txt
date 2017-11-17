@@ -1,35 +1,22 @@
+project(wfde_unit_tests LANGUAGES CXX)
 
-project(wfde_unit_tests)
-set(ACTUAL_SOURCES
-    test_WfdeFtpSession.cpp
-    test_WfdeConfigurationPropertyTree.cpp
-    test_wfde.cpp
-    test_WfdePermissions.cpp
-    test_WfdePath.cpp
+enable_testing()
+
+MACRO(WFDE_ADD_TEST Name Source)
+    add_executable(${Name} ${Source})
+    add_dependencies(${Name} externalLest)
+    target_link_libraries(${Name} wfde)
+    target_include_directories(${Name}
+        PRIVATE ${WFDE_ROOT}/include>
+        PRIVATE ${CMAKE_BINARY_DIR}/generated-include/
+        PRIVATE ${WFDE_ROOT}/src/wfded
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
     )
+    add_and_run_test(${Name} ${CMAKE_CURRENT_BINARY_DIR})
+ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
-set(HEADERS
-	${WARLIB_ROOT_DIR}/include/tasks/WarPipeline.h
-	)
-
-if (WIN32)
-	ADD_MSVC_PRECOMPILED_HEADER(war_tests.h pch.cpp ACTUAL_SOURCES)
-	add_definitions(-DWFDE_PCH)
-	set(SOURCES ${ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
-else()
-	set(SOURCES ${ACTUAL_SOURCES})
-endif()
-
-add_definitions(-DBOOST_TEST_DYN_LINK)
-
-add_executable(wfde_unit_tests ${SOURCES})
-target_link_libraries(wfde_unit_tests
-    ${DEFAULT_LIBRARIES}
-    wfde
-    ${BOOST_UNIT_TEST_LIBRARIES})
-
-add_test(WFDE_UNITTESTS wfde_unit_tests)
-
-add_subdirectory(wfded)
-
-message(STATUS "DEFAULT_LIBRARIES: ${DEFAULT_LIBRARIES}")
+wfde_add_test(wfde_tests test_wfde.cpp)
+wfde_add_test(wfde_session test_WfdeFtpSession.cpp)
+wfde_add_test(wfde_ptree test_WfdeConfigurationPropertyTree.cpp)
+wfde_add_test(wfde_permissions test_WfdePermissions.cpp)
+wfde_add_test(wfde_path test_WfdePath.cpp)

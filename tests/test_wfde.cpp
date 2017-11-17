@@ -6,22 +6,16 @@
 #include <chrono>
 #include <wfde/wfde.h>
 #include "TestConfig.h"
-#include <tasks/WarThreadpool.h>
-
+#include <warlib/WarThreadpool.h>
 
 using namespace std;
 using namespace war;
-using namespace wfde::test;
+using namespace war::wfde;
+using namespace war::wfde::test;
 
+const lest::test specification[] = {
 
-BOOST_AUTO_TEST_SUITE(Wfde_Unit_Tests)
-
-BOOST_AUTO_TEST_CASE(Test_ServerObject)
-{
-    log::LogEngine log;
-    log.AddHandler(log::LogToFile::Create("test_wfde_ServerObject.log", true, "file",
-        log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
-
+STARTCASE(Test_ServerObject) {
     Threadpool tp;
 
     // Check configuration
@@ -40,21 +34,21 @@ BOOST_AUTO_TEST_CASE(Test_ServerObject)
         auto conf = make_shared<TestConfig>(conf_data);
 
         auto v = conf->EnumNodes("/Server/Test");
-        BOOST_CHECK_MESSAGE(v.size() == 1, "One config node");
+        EXPECT(v.size() == 1);
 
         v = conf->EnumNodes("/Server/Hosts/FanClub");
-        BOOST_CHECK_MESSAGE(v.size() == 2, "Five config nodes - o to two");
-        BOOST_CHECK_MESSAGE(v[1].name == "Protocols", "Name");
+        EXPECT(v.size() == 2);
+        EXPECT(v[1].name == "Protocols");
 
         v = conf->EnumNodes("/Server/Hosts/FanClub/Protocols/ftp/Interfaces/tcp");
-        BOOST_CHECK_MESSAGE(v.size() == 3, "Three config nodes");
+        EXPECT(v.size() == 3);
     }
 
     // Verify the default server name
     {
         auto conf = make_shared<TestConfig>();
         auto svr = wfde::CreateServer(conf, tp); // empty conf
-        BOOST_CHECK_MESSAGE((svr->GetName() == "Default"), "svr->GetName() == Default");
+        EXPECT(svr->GetName() == "Default");
     }
 
     // Verify that we can set our own name in the config and that it applies for the server.
@@ -67,9 +61,17 @@ BOOST_AUTO_TEST_CASE(Test_ServerObject)
         auto svr_conf = conf->GetConfigForPath("/Server");
         auto svr = wfde::CreateServer(svr_conf, tp);
 
-        BOOST_CHECK_MESSAGE((svr->GetName() == name), std::string("svr->GetName() == ") + name);
+        EXPECT(svr->GetName() == name);
     }
+} ENDCASE
+}; //lest
+
+int main( int argc, char * argv[] )
+{
+    log::LogEngine log;
+    log.AddHandler(log::LogToFile::Create("Test_ServerObject.log", true, "file",
+        log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
+
+    return lest::run( specification, argc, argv );
 }
 
-
-BOOST_AUTO_TEST_SUITE_END()

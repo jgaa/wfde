@@ -10,7 +10,7 @@ endif()
 if (NOT DEFINED WFDE_WITH_UNIT_TESTS)
     option(WFDE_WITH_UNIT_TESTS "Enable Unit Testing" ON)
     if (NOT DEFINED WFDE_AUTORUN_UNIT_TESTS)
-        option(WFDE_AUTORUN_UNIT_TESTS "Run unit tests during build" ON)
+        option(WFDE_AUTORUN_UNIT_TESTS "Run unit tests during build" OFF)
     endif()
 endif()
 
@@ -32,12 +32,17 @@ find_package(Boost 1.50 REQUIRED COMPONENTS
     )
 add_library(boost INTERFACE IMPORTED)
 set_property(TARGET boost PROPERTY
-    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
+    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+    )
 
 find_package(OpenSSL REQUIRED)
 
 add_subdirectory(src/wfde)
 add_subdirectory(src/wfded)
+
+if (WFDE_WITH_UNIT_TESTS)
+    add_subdirectory(tests)
+endif()
 
 CONFIGURE_FILE(config.h.template ${CMAKE_BINARY_DIR}/generated-include/wfde/config.h)
 

@@ -1,6 +1,6 @@
 macro (ADD_AND_RUN_TEST testname cwd)
 add_test(NAME ${testname} COMMAND ${testname})
-if (WAR_AUTORUN_UNIT_TESTS)
+if (WFDE_AUTORUN_UNIT_TESTS)
     message(STATUS "Adding test for auto-run:  ${testname}")
     add_custom_command(
         TARGET ${testname}

@@ -2,8 +2,6 @@
 #include <wfde/wfde.h>
 #include "../src/wfde/ftp/WfdeFtpSession.h"
 
-#include <boost/test/unit_test.hpp>
-
 using namespace std;
 using namespace war;
 using namespace war::wfde;
@@ -63,33 +61,32 @@ protected:
     }
 };
 
-BOOST_AUTO_TEST_SUITE(Wfde_Unit_Tests)
+const lest::test specification[] = {
 
-BOOST_AUTO_TEST_CASE(Test_WfdeFtpSessionInput)
+STARTCASE(Test_WfdeFtpSessionInput)
 {
     TestWfdeFtpSessionInput sesi;
 
-    BOOST_CHECK(sesi.FetchNextCommand() == "SYST");
-    BOOST_CHECK(sesi.FetchNextCommand() == "RETR path/path/path");
-    BOOST_CHECK(sesi.FetchNextCommand() == "NLST test/me");
-    BOOST_CHECK(sesi.FetchNextCommand() == "TEST IT");
-    BOOST_CHECK(sesi.FetchNextCommand() == "TEST1");
-    BOOST_CHECK(sesi.FetchNextCommand() == "TEST2 ");
-    BOOST_CHECK(sesi.FetchNextCommand() == " TEST3 ");
-    BOOST_CHECK(sesi.FetchNextCommand() == "test1");
-    BOOST_CHECK(sesi.FetchNextCommand() == "test2");
-    BOOST_CHECK(sesi.FetchNextCommand() == "test3");
-    BOOST_CHECK_THROW(sesi.FetchNextCommand(),
+    EXPECT(string(sesi.FetchNextCommand()) == "SYST");
+    EXPECT(string(sesi.FetchNextCommand()) == "RETR path/path/path");
+    EXPECT(string(sesi.FetchNextCommand()) == "NLST test/me");
+    EXPECT(string(sesi.FetchNextCommand()) == "TEST IT");
+    EXPECT(string(sesi.FetchNextCommand()) == "TEST1");
+    EXPECT(string(sesi.FetchNextCommand()) == "TEST2 ");
+    EXPECT(string(sesi.FetchNextCommand()) == " TEST3 ");
+    EXPECT(string(sesi.FetchNextCommand()) == "test1");
+    EXPECT(string(sesi.FetchNextCommand()) == "test2");
+    EXPECT(string(sesi.FetchNextCommand()) == "test3");
+    EXPECT_THROWS_AS(sesi.FetchNextCommand(),
                       war::wfde::impl::WfdeFtpSessionInput::NoInputException);
-}
+} ENDCASE
+}; //lest
 
-BOOST_AUTO_TEST_CASE(Test_WfdeFtpSessionInput_Overflow)
+int main( int argc, char * argv[] )
 {
-    TestWfdeFtpSessionInputOf sesi;
+    log::LogEngine log;
+    log.AddHandler(log::LogToFile::Create("Test_ServerObject.log", true, "file",
+        log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
 
-    BOOST_CHECK_THROW(sesi.FetchNextCommand(),
-                      war::wfde::impl::WfdeFtpSessionInput::InputTooBigException);
+    return lest::run( specification, argc, argv );
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-
