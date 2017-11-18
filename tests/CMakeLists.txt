@@ -13,7 +13,7 @@ MACRO(WFDE_ADD_TEST Name Source)
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
     )
     add_and_run_test(${Name} ${CMAKE_CURRENT_BINARY_DIR})
-ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
+ENDMACRO(WFDE_ADD_TEST)
 
 wfde_add_test(wfde_tests test_wfde.cpp)
 wfde_add_test(wfde_session test_WfdeFtpSession.cpp)
