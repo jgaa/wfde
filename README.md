@@ -26,27 +26,34 @@ This is Work in progress.
 In order to run the functional tests, you first run basic_tests.py, and then you start
 the FTP server with a configuration-file created by the test script.
 
-Example:
-[In a shell session]:
+The first time the tests are run they will create some large files for testing of large file transfers.
+
+Shell session 1
+```sh
 ~/src/wfde$ ./tests/functional/basic_tests.py
-Creating path: /home/jgaa/src/wfde/test-tmp/ftproot
-Creating path: /home/jgaa/src/wfde/test-tmp/client
-Creating path: /home/jgaa/src/wfde/test-tmp/ftproot/home/jgaa
-Creating path: /home/jgaa/src/wfde/test-tmp/ftproot/upload
-Creating path: /home/jgaa/src/wfde/test-tmp/ftproot/pub/sub/sub2
-Creating path: /home/jgaa/src/wfde/test-tmp/ftproot/empty
 Creating missing test-files for download
-This may take a few minutes...
 Ready to start tests on ftp-root: /home/jgaa/src/wfde/test-tmp/ftproot
 Start the server with config-path to /home/jgaa/src/wfde/test-tmp/wfded.conf
 Press ENTER when ready
-...
+```
 
-[In another shell session]:
-~/src/wfde$ ./dbuild/tests/wfded/wfdedD -c /home/jgaa/src/wfde/test-tmp/wfded.conf
-...
-
+Shell session 2
+```sh
+~/src/wfde$ ./build/src/wfded/wfded -c /home/jgaa/src/wfde/test-tmp/wfded.conf
+2017-11-18 10:28.098 139793673900288 INFO: wfded 0.21 starting up
+2017-11-18 10:28.098 139793673900288 NOTICE: Reading configuration-file: "/home/jgaa/src/wfde/test-tmp/wfded.conf"
+2017-11-18 10:28.098 139793673900288 NOTICE: Starting threadpool with 7 threads.
+2017-11-18 10:28.101 139793673900288 NOTICE: Adding {Host "Default"} to {Server "Server"}
+2017-11-18 10:28.102 139793673900288 NOTICE: Adding {Protocol "FTP"} to {Host "Default"}
+2017-11-18 10:28.103 139793673900288 INFO: Starting all services
+2017-11-18 10:28.103 139793673900288 NOTICE: Starting the services for {Server "Server"}
+2017-11-18 10:28.103 139793673900288 NOTICE: Starting {Host "Default"}
+2017-11-18 10:28.103 139793673900288 NOTICE: Starting {Protocol "FTP"}
+2017-11-18 10:28.103 139793673900288 NOTICE: Starting {Interface "tcp-local"}, listening on 127.0.0.1:2121
+2017-11-18 10:28.103 139793673900288 NOTICE: Done starting the services for {Server "Server"}
+```
 Now, press ENTER in the first shell session and wait for the tests to finish.
 
 Press ^C in the second session to kill the FTP server when the tests have finished.
 
+When the project is a bit more mature, I will refactor these tests to be easily used cross platform from Continuous Integration systems like Jenkins.
