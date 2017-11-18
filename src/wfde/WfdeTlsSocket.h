@@ -188,6 +188,9 @@ private:
                                           boost::asio::ssl::context::pem);
         //tls_context_.use_tmp_dh_file("dh512.pem");
 
+        LOG_DEBUG_FN << "Using TLS certificate " << cert_path_
+            << " for socket " << id_;
+
         ssl_socket_ = std::make_unique<ssl_socket_t>(pipeline_.GetIoService(),
                                                      tls_context_);
     }
