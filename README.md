@@ -21,7 +21,6 @@ This is Work in progress.
 
 
 ## Functional Testing:
---------------------------
 
 In order to run the functional tests, you first run basic_tests.py, and then you start
 the FTP server with a configuration-file created by the test script.
@@ -29,7 +28,7 @@ the FTP server with a configuration-file created by the test script.
 The first time the tests are run they will create some large files for testing of large file transfers.
 
 Shell session 1
-```sh
+```text
 ~/src/wfde$ ./tests/functional/basic_tests.py
 Creating missing test-files for download
 Ready to start tests on ftp-root: /home/jgaa/src/wfde/test-tmp/ftproot
@@ -38,7 +37,7 @@ Press ENTER when ready
 ```
 
 Shell session 2
-```sh
+```text
 ~/src/wfde$ ./build/src/wfded/wfded -c /home/jgaa/src/wfde/test-tmp/wfded.conf
 2017-11-18 10:28.098 139793673900288 INFO: wfded 0.21 starting up
 2017-11-18 10:28.098 139793673900288 NOTICE: Reading configuration-file: "/home/jgaa/src/wfde/test-tmp/wfded.conf"
