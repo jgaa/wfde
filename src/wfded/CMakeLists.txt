@@ -1,4 +1,4 @@
-project(wfded VERSION 3.0 LANGUAGES CXX)
+project(wfded VERSION 0.21.0 LANGUAGES CXX)
 
 set(FTPD_ACTUAL_SOURCES
     wfded.cpp
