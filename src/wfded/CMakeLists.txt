@@ -16,7 +16,7 @@ endif()
 
 add_executable(wfded ${FTPD_SOURCES})
 set_property(TARGET wfded PROPERTY CXX_STANDARD 14)
-target_link_libraries(wfded PRIVATE ${Boost_LIBRARIES} wfde)
+target_link_libraries(wfded PUBLIC ${Boost_LIBRARIES} wfde)
 target_compile_definitions(${PROJECT_NAME} PRIVATE -DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
 target_compile_definitions(${PROJECT_NAME} PRIVATE -DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
 
