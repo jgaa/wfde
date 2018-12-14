@@ -500,14 +500,20 @@ void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)
         state_.ResetTransfer();
         return;
     }
-
+    
+    const auto cert_path =  socket_ptr_->GetCertPath();
+    
+    Socket::ptr_t sck;
 #ifdef WFDE_WITH_TLS
-    auto sck = make_shared<tls_tcp_socket_t>(GetPipeline(), socket_ptr_->GetCertPath());
+    if (!cert_path.empty()) {
+        LOG_DEBUG_FN << "Creating TLS socket with certificate: " << log::Esc(cert_path.string());
+        sck = make_shared<tls_tcp_socket_t>(GetPipeline(), cert_path);
+    } else {
 #else
-    auto sck = make_shared<tcp_socket_t>(GetPipeline());
+    {
 #endif
-
-    //boost::asio::ip::tcp::socket sck(GetPipeline().GetIoService());
+        sck = make_shared<tcp_socket_t>(GetPipeline());
+    }
 
     if (state_.initiation == FtpState::Initiation::PORT) {
         if (!DoPort(*sck, yield)) {
