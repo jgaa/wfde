@@ -112,7 +112,7 @@ using ip_list_t = vector<pair<string /* host */, string /* port */>>;
 
 void SleepUntilDoomdsay()
 {
-    io_service_t main_thread_service;
+    io_context_t main_thread_service;
 
     boost::asio::signal_set signals(main_thread_service, SIGINT, SIGTERM
 #ifdef SIGQUIT
