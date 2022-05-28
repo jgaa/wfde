@@ -24,6 +24,9 @@ message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 include(cmake_scripts/external-projects.cmake)
 include(cmake_scripts/add_and_run_test.cmake)
 
+# Asio use depricated headers. Remove the spam warnings...
+add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS=1)
+
 # Include Boost as an imported target
 find_package(Boost 1.65 REQUIRED COMPONENTS
     system
