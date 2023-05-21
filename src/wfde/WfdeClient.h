@@ -23,7 +23,7 @@ public:
         return uuid_;
     }
 
-    int GetNumInstances() const { return instances_; }
+    int GetNumInstances() const override { return instances_; }
 
 private:
     const std::string login_name_;

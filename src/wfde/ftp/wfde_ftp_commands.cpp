@@ -1239,7 +1239,7 @@ public:
             boost::split(facts, param, boost::is_any_of("; "));
 
             state.mdtx_state.DisableAll();
-            for(const auto name : facts) {
+            for (const auto &name : facts) {
                 state.mdtx_state.Enable(name);
             }
         }

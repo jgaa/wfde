@@ -20,7 +20,7 @@ public:
     {
     public:
         SubConfig(std::string root, Configuration::ptr_t conf)
-            : root_path_(move(root)), conf_(move(conf))
+            : root_path_(std::move(root)), conf_(std::move(conf))
         {}
 
         Configuration::ptr_t GetConfigForPath(std::string path) override {
@@ -42,11 +42,11 @@ public:
             return conf_->CanWrite();
         }
 
-        void SetValue(const char* path, std::string value) {
+        void SetValue(const char* path, std::string value) override {
             conf_->SetValue((root_path_ + Sep(path) + path).c_str(), value);
         }
 
-        node_enum_t EnumNodes(const char *path) {
+        node_enum_t EnumNodes(const char *path) override {
             return conf_->EnumNodes((root_path_ + Sep(path) + path).c_str());
         }
 
@@ -72,7 +72,7 @@ public:
         return std::make_shared<SubConfig>(path, shared_from_this());
     }
 
-    std::string GetValue(const char* path, const char* defaultVal = nullptr) const;
+    std::string GetValue(const char* path, const char* defaultVal = nullptr) const override;
     
     bool HaveValue(const char* path) const override;
 

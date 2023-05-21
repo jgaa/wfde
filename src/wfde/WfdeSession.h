@@ -102,11 +102,11 @@ public:
         return  {std::chrono::steady_clock::now() - stable_login_time_};
     }
 
-    void Add(const std::shared_ptr<Data>& data) {
+    void Add(const std::shared_ptr<Data>& data) override {
         owned_data_.emplace_back(data);
     }
 
-    void Set(SessionData *data) {
+    void Set(SessionData *data) override {
         session_data_ = data;
     }
 

@@ -136,14 +136,14 @@ auto PrepareServers(const Configuration::ptr_t& conf, Threadpool& threadPool)
 
     // Enumerate servers
     auto svrdefs = conf->EnumNodes("/");
-    for(auto svrdef : svrdefs) {
+    for (const auto &svrdef : svrdefs) {
         const auto svr_path = "/"s + svrdef.name;
         auto server = CreateServer(conf->GetConfigForPath(svr_path), threadPool);
 
         // Enumerate hosts
         auto hosts_path = svr_path + "/Hosts"s;
         auto hostsdefs = conf->EnumNodes(hosts_path.c_str());
-        for(auto hostdef : hostsdefs) {
+        for (const auto &hostdef : hostsdefs) {
             auto thishost_path = hosts_path + "/"s + hostdef.name;
 
             auto auth_mgr = make_shared<wfded::AuthManagerImpl>(
@@ -158,7 +158,7 @@ auto PrepareServers(const Configuration::ptr_t& conf, Threadpool& threadPool)
             // enumerate protocols
             const auto prot_path = thishost_path + "/Protocols"s;
             auto prdefs = conf->EnumNodes(prot_path.c_str());
-            for(auto prdef: prdefs) {
+            for (const auto &prdef : prdefs) {
                 const auto thispr_path = prot_path + "/"s + prdef.name;
                 auto prot = CreateProtocol(host.get(),
                     conf->GetConfigForPath(thispr_path));

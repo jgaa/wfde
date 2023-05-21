@@ -49,7 +49,7 @@ class AuthManager;
 enum class Version
 {
     MAJOR = 0,
-    MINOR = 21
+    MINOR = 22
 };
 
 /*! Program configuration

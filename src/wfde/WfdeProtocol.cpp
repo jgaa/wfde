@@ -66,7 +66,7 @@ unsigned WfdeProtocol::AddInterfaces()
     const string root{ "/Interfaces" };
     const auto interfaces = conf_->EnumNodes(root.c_str());
 
-    for(const auto name : interfaces) {
+    for (const auto &name : interfaces) {
         auto path = root + "/" + name.name;
 
         LOG_TRACE1_FN << "Adding interface on path: " << log::Esc(path);

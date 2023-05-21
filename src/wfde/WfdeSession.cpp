@@ -67,7 +67,7 @@ bool WfdeSession::AuthenticateWithPasswd(const string& name, const string& pwd)
         }
 
         LOG_NOTICE_FN << *client << " logged on to " << *this;
-        SetClient(move(client));
+        SetClient(std::move(client));
         return true;
     } catch(AuthManager::ExceptionBadCredentials) {
         // TODO: Notify security manager
@@ -139,7 +139,7 @@ unique_ptr< File > WfdeSession::OpenFile(const vpath_t& path,
         << " for " << operation
         << " in " << *this;
 
-    return move(file);
+    return std::move(file);
 }
 
 void WfdeSession::DeleteFile(const Session::vpath_t& path)

@@ -48,7 +48,7 @@ namespace impl {
 WfdePermissions::WfdePermissions(const WfdePermissions& v)
 {
     for(const auto& path: v.paths_) {
-        paths_.push_back(move(path->Copy()));
+        paths_.push_back(std::move(path->Copy()));
     }
 }
 
@@ -143,7 +143,7 @@ void WfdePermissions::AddPath(unique_ptr< Path >&& path)
         << " --> " << log::Esc(path->GetPhysPath().string())
         << " to configuration";
 
-    paths_.push_back(move(path));
+    paths_.push_back(std::move(path));
 }
 
 Permissions::ptr_t WfdePermissions::Copy() const
@@ -186,7 +186,7 @@ void WfdePermissions::Merge(const Permissions& perms)
         }
 
         // Add the path
-        paths_.push_back(move(p->Copy()));
+        paths_.push_back(std::move(p->Copy()));
     }
 }
 
@@ -205,7 +205,7 @@ std::shared_ptr<Permissions> CreatePermissions(Configuration::ptr_t conf)
 
     auto paths = conf->EnumNodes("");
 
-    for(const auto name: paths) {
+    for (const auto &name : paths) {
         string node_name = "/"s + name.name + "/Name"s;
         const auto vpath = conf->GetValue(node_name.c_str());
 
@@ -217,10 +217,10 @@ std::shared_ptr<Permissions> CreatePermissions(Configuration::ptr_t conf)
 
         auto new_path = make_unique<impl::WfdePath>(vpath, ppath, Path::ToPermBits(perms));
 
-        rval_perms->AddPath(move(new_path));
+        rval_perms->AddPath(std::move(new_path));
     }
 
-    return move(rval_perms);
+    return std::move(rval_perms);
 }
 
 }} // namespaceces

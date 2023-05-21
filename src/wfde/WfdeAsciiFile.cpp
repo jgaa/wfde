@@ -15,7 +15,7 @@ namespace impl {
 
 
 WfdeAsciiFile::WfdeAsciiFile(unique_ptr< File > file)
-: file_{move(file)}
+: file_{std::move(file)}
 {
     LOG_DEBUG_FN << "Wrapping " << *file_ << " for ASCII transfer";
 }
