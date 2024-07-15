@@ -242,7 +242,7 @@ void WfdeFile::Close()
 
         if (do_truncate_
             && (file_size_ > end_of_file_pos_)
-            && boost::filesystem::is_regular(path_)) {
+            && boost::filesystem::is_regular_file(path_)) {
             WAR_ASSERT(end_of_file_pos_ >= 0);
             LOG_TRACE4_F_FN(log::LA_IO) << "Truncating file " << *this
                 << " from " << file_size_

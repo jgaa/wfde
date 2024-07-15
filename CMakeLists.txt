@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project (wfde_project VERSION 1.1 LANGUAGES CXX)
+project (wfde_project VERSION 1.2 LANGUAGES CXX)
 
 set (WFDE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
