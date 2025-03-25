@@ -31,9 +31,9 @@ File::const_buffer_t WfdeAsciiFile::Read(size_t bytes)
     auto buffer = file_->Read(bytes);
     buffer_.clear();
 
-    for(const auto& b : buffer) {
-        auto p = boost::asio::buffer_cast<const char*>(b);
-        const decltype(p) end = p + boost::asio::buffer_size(b);
+    //for(const auto& b : buffer) {
+        auto p = static_cast<const char*>(buffer.data());
+        const decltype(p) end = p + boost::asio::buffer_size(buffer);
 
         for(; p < end; ++p) {
             if (UNLIKELY(*p == '\r'))
@@ -44,7 +44,7 @@ File::const_buffer_t WfdeAsciiFile::Read(size_t bytes)
                 buffer_ += *p;
             }
         }
-    }
+    //}
 
     return {buffer_.c_str(), buffer_.size()};
 }
@@ -66,7 +66,7 @@ void WfdeAsciiFile::SetBytesWritten(const size_t bytes)
     auto wr_buf = file_->Write(bytes * 2); //make space for worst-case expansion
     WAR_ASSERT(wr_buf.begin() + 1 == wr_buf.end()); // We don't want the complexity with several buffers
 
-    auto wr_ptr = boost::asio::buffer_cast<char*>(*wr_buf.begin());
+    auto wr_ptr = static_cast<char*>(wr_buf.data());
     auto b = wr_ptr;
     WAR_ASSERT(b != nullptr);
 

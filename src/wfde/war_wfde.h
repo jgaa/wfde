@@ -12,4 +12,3 @@
 #include <warlib/basics.h>
 #include <warlib/WarLog.h>
 #include <wfde/wfde.h>
-

@@ -49,19 +49,19 @@ public:
         socket_.async_connect(ep, yield);
     }
 
-    std::size_t AsyncRead(boost::asio::mutable_buffers_1 buffers,
+    std::size_t AsyncRead(boost::asio::mutable_buffer buffers,
                           boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
         return boost::asio::async_read(socket_, buffers, yield);
     }
 
-    std::size_t AsyncReadSome(boost::asio::mutable_buffers_1 buffers,
+    std::size_t AsyncReadSome(boost::asio::mutable_buffer buffers,
                               boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
         return socket_.async_read_some(buffers, yield);
     }
 
-    void AsyncWrite(const boost::asio::const_buffers_1& buffers,
+    void AsyncWrite(const boost::asio::const_buffer& buffers,
                     boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
 

@@ -72,7 +72,7 @@ public:
         GetSocket().async_connect(ep, yield);
     }
 
-    std::size_t AsyncRead(boost::asio::mutable_buffers_1 buffers,
+    std::size_t AsyncRead(boost::asio::mutable_buffer buffers,
                           boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
 
@@ -86,7 +86,7 @@ public:
         return  boost::asio::async_read(GetSocket(), buffers, yield);
     }
 
-    std::size_t AsyncReadSome(boost::asio::mutable_buffers_1 buffers,
+    std::size_t AsyncReadSome(boost::asio::mutable_buffer buffers,
                               boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
         LOG_TRACE4_F_FN(war::log::LA_IO) << "Receiving up to  "
@@ -99,7 +99,7 @@ public:
         return GetSocket().async_read_some(buffers, yield);
     }
 
-    void AsyncWrite(const boost::asio::const_buffers_1& buffers,
+    void AsyncWrite(const boost::asio::const_buffer& buffers,
                     boost::asio::yield_context& yield) override {
         WAR_LOG_FUNCTION;
         LOG_TRACE4_F_FN(war::log::LA_IO) << "Sending "

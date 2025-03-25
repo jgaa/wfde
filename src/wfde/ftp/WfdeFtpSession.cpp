@@ -111,7 +111,7 @@ boost::string_ref WfdeFtpSessionInput::FetchNextCommand()
 class Foo
 {
 public:
-    size_t AsyncReadSome(boost::asio::mutable_buffers_1 b) {
+    size_t AsyncReadSome(boost::asio::mutable_buffer b) {
         return sck_->async_read_some(b, *yield);
     }
 
@@ -483,7 +483,8 @@ void WfdeFtpSession::StartTransfer(unique_ptr<File> file)
     boost::asio::spawn(GetPipeline().GetIoService(),
                        bind(&WfdeFtpSession::TransferFile,
                             shared_from_this(),
-                            std::placeholders::_1));
+                            std::placeholders::_1),
+                       boost::asio::detached);
 }
 
 void WfdeFtpSession::TransferFile(boost::asio::yield_context yield)

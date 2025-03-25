@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.6)
-project (wfde_project VERSION 1.2 LANGUAGES CXX)
+project (wfde_project VERSION 1.3 LANGUAGES CXX)
 
 set (WFDE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+option(BOOST_USE_STATIC_LIBS "Link boost libraries statically" ON)
 
 if (NOT DEFINED WFDE_WITH_TLS)
     option(WFDE_WITH_TLS "Enable TLS" ON)
 endif()
-
 
 if (NOT DEFINED WITH_APIDOC)
     option(WITH_APIDOC "Generate Doxygen documentation")
@@ -17,6 +18,13 @@ if (NOT DEFINED WFDE_WITH_UNIT_TESTS)
     if (NOT DEFINED WFDE_AUTORUN_UNIT_TESTS)
         option(WFDE_AUTORUN_UNIT_TESTS "Run unit tests during build" OFF)
     endif()
+endif()
+
+if (BOOST_USE_STATIC_LIBS)
+    message("Using static boost libraries")
+    set(Boost_USE_STATIC_LIBS ON CACHE INTERNAL "")
+else()
+    set(Boost_USE_STATIC_LIBS OFF CACHE INTERNAL "")
 endif()
 
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")

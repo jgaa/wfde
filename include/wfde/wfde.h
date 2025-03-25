@@ -6,11 +6,13 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/utility/string_ref_fwd.hpp>
+#include <boost/asio/buffer.hpp>
 
 #include <wfde/config.h>
 #include <warlib/basics.h>
 #include <warlib/error_handling.h>
 #include <warlib/asio.h>
+#include <boost/asio/buffer.hpp>
 
 #ifndef WFDE_DEFAULT_HOST_LONG_NAME
 #   define WFDE_DEFAULT_HOST_LONG_NAME "Jgaa's Fan Club FTP Server"
@@ -696,11 +698,11 @@ public:
     virtual const Pipeline& GetPipeline() const = 0;
     virtual const std::string& GetName() const = 0;
 
-    virtual std::size_t AsyncReadSome(boost::asio::mutable_buffers_1 buffers,
+    virtual std::size_t AsyncReadSome(boost::asio::mutable_buffer buffers,
                                       boost::asio::yield_context& yield) = 0;
-    virtual std::size_t AsyncRead(boost::asio::mutable_buffers_1 buffers,
+    virtual std::size_t AsyncRead(boost::asio::mutable_buffer buffers,
                                   boost::asio::yield_context& yield) = 0;
-    virtual void AsyncWrite(const boost::asio::const_buffers_1& buffers,
+    virtual void AsyncWrite(const boost::asio::const_buffer& buffers,
                             boost::asio::yield_context& yield) = 0;
     virtual void AsyncWrite(const write_buffers_t& buffers,
                             boost::asio::yield_context& yield) = 0;
@@ -772,8 +774,8 @@ class File
 {
 public:
     using fpos_t = std::uint64_t;
-    using const_buffer_t = boost::asio::const_buffers_1;
-    using mutable_buffer_t = boost::asio::mutable_buffers_1;
+    using const_buffer_t = boost::asio::const_buffer;
+    using mutable_buffer_t = boost::asio::mutable_buffer;
 
     enum class FileOperation { READ, WRITE, WRITE_NEW, APPEND };
 

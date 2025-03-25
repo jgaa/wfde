@@ -92,27 +92,28 @@ unsigned WfdeProtocol::AddInterface(const Configuration::ptr_t& conf)
         << log::Esc(if_port)
         << " to " << *this;
 
-    boost::asio::io_service io; // for resolving, no async operations.
+    boost::asio::io_context io; // for resolving, no async operations.
     boost::asio::ip::tcp::resolver resolver(io);
-    boost::asio::ip::tcp::resolver::iterator end, endpoints;
+    boost::asio::ip::tcp::resolver::results_type endpoints;
 
     try {
-        endpoints = resolver.resolve({if_ip, if_port});
-    } catch(const boost::exception& ex) {
+        endpoints = resolver.resolve(if_ip, if_port);
+    } catch (const boost::system::system_error& ex) { // preferably catch system_error
         LOG_ERROR_FN << "Failed to resolve " << log::Esc(if_name)
-        << ": " << ex;
+                     << ": " << ex.what();
         throw;
     }
-    for(;endpoints != end; ++endpoints) {
-        auto ep = endpoints->endpoint();
+
+    for (const auto& entry : endpoints) {
+        auto ep = entry.endpoint();
         Interface::ptr_t new_if = CreateInterface(
             this,
             if_name + "-" + ep.address().to_string(),
-            endpoints->endpoint(), conf);
+            ep, // use the endpoint directly
+            conf);
 
         ++added_if_cnt;
         interfaces_.push_back(new_if);
-
         LOG_DEBUG_FN << "Added interface " << *new_if << " to " << *this;
     }
 

@@ -42,7 +42,8 @@ void WfdeProtocolFtp::HandleConnection(const Socket::ptr_t& socket)
      */
     boost::asio::spawn(ios, bind(&WfdeFtpSession::ProcessCommands,
                                  ftp_session,
-                                 std::placeholders::_1));
+                                 std::placeholders::_1),
+                       boost::asio::detached);
 }
 
 

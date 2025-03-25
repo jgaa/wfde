@@ -77,7 +77,8 @@ void WfdeInterface::Start(Pipeline& pipeline, handler_t onConnected)
 
     boost::asio::spawn(pipeline_->GetIoService(),
                        std::bind(&WfdeInterface::Accept,
-                                 this, std::placeholders::_1));
+                                 this, std::placeholders::_1),
+                       boost::asio::detached);
 }
 
 void WfdeInterface::Stop()

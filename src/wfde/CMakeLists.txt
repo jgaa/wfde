@@ -37,16 +37,16 @@ set(HEADERS
     WfdeSession.h
     WfdeFile.h
     WfdeAsciiFile.h
-    ${WFDE_ROOT_DIR}/include/wfde/wfde.h
-    ${WFDE_ROOT_DIR}/include/wfde/win/FileListIterator.h
-    ${WARLIB_ROOT_DIR}/include/tasks/WarThreadpool.h
-    ${WARLIB_ROOT_DIR}/include/war_asio.h
+    ${WFDE_ROOT}/include/wfde/wfde.h
+    ${WFDE_ROOT}/include/wfde/win/FileListIterator.h
+    # ${WARLIB_ROOT}/include/tasks/WarThreadpool.h
+    # ${WARLIB_ROOT}/include/war_asio.h
     )
 
 if (WIN32)
     set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
-    set(SOURCES ${ACTUAL_SOURCES})
+    set(SOURCES ${ACTUAL_SOURCES} ${HEADERS})
 endif()
 
 add_library(wfde ${SOURCES})

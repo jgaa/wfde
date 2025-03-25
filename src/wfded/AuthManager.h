@@ -8,6 +8,8 @@
  */
 
 #include <atomic>
+#include <string>
+#include <cstring>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include <wfde/wfde.h>
@@ -22,9 +24,9 @@ namespace wfded {
 
 // recommended in Meyers, Effective STL when internationalization and embedded
 // NULLs aren't an issue.  Much faster than the STL or Boost lex versions.
-struct ciLessLibC : public std::binary_function<std::string, std::string, bool> {
+struct ciLessLibC {
     bool operator()(const std::string &lhs, const std::string &rhs) const {
-        return strcasecmp(lhs.c_str(), rhs.c_str()) < 0 ;
+        return strcasecmp(lhs.c_str(), rhs.c_str()) < 0;
     }
 };
 

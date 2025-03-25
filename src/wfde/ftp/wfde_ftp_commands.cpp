@@ -294,8 +294,7 @@ public:
             + string(match[3].first, match[3].second) + "."
             + string(match[4].first, match[4].second);
 
-        auto ip = boost::asio::ip::address_v4::from_string(ip_str);
-
+        auto ip = boost::asio::ip::make_address_v4(ip_str);
         state.SetPort({ip, port});
         reply.Reply(FtpReplyCodes::RC_OK);
     }
@@ -1306,7 +1305,7 @@ private:
             string listing = " ";
             while(!file->IsEof()) {
                 auto b = file->Read();
-                auto p = boost::asio::buffer_cast<const char *>(b);
+                auto p = static_cast<const char *>(b.data());
                 const auto end = p + boost::asio::buffer_size(b);
 
                 for(; p != end; ++p) {

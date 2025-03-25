@@ -27,7 +27,7 @@ std::string GetMlstFacts(const Path& path, Session& session,
     mlst.List();
     const auto b = mlst.GetBuffer();
 
-    std::string rval {boost::asio::buffer_cast<const char *>(b),
+    std::string rval {static_cast<const char *>(b.data()),
         boost::asio::buffer_size(b)};
 
     if (rval.size() > 2) {
