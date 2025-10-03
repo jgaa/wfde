@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project (wfde_project VERSION 1.3 LANGUAGES CXX)
+project (wfde_project VERSION 1.4 LANGUAGES CXX)
 
 set (WFDE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -37,7 +37,6 @@ add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS=1)
 
 # Include Boost as an imported target
 find_package(Boost 1.65 REQUIRED COMPONENTS
-    system
     program_options
     filesystem
     date_time

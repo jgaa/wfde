@@ -201,7 +201,10 @@ int main(int argc, char *argv[])
 #ifndef WIN32
         if (options.daemon) {
             LOG_INFO << "Switching to system daemon mode";
-            daemon(1, 0);
+            if (!daemon(1, 0)) {
+                const auto err = errno;
+                LOG_ERROR << "Failed to switch to daemon-mode: " << strerror(err);
+            }
         }
 #endif
 
